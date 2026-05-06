@@ -10,25 +10,25 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --wine: #7F011F;
-  --wine-deep: #5a0116;
-  --wine-mid: #9e0226;
-  --wine-light: rgba(127,1,31,0.12);
-  --wine-glow: rgba(127,1,31,0.25);
-  --sand: #F5EBD0;
-  --sand-warm: #ede0c0;
-  --sand-dim: rgba(245,235,208,0.65);
-  --sand-subtle: rgba(245,235,208,0.22);
-  --sand-faint: rgba(245,235,208,0.08);
-  --black: #0e0608;
-  --deep: #140308;
-  --surface: #1c050c;
-  --panel: #200610;
-  --panel-light: #2a0914;
-  --border: rgba(245,235,208,0.1);
-  --border-bright: rgba(245,235,208,0.22);
-  --border-wine: rgba(127,1,31,0.35);
-  --accent: #c9a84c;
+  --wine: #FC3B00;
+  --wine-deep: #4A1508;
+  --wine-mid: #FF7145;
+  --wine-light: rgba(252,59,0,0.12);
+  --wine-glow: rgba(252,59,0,0.25);
+  --sand: #FFFFFF;
+  --sand-warm: #F6F6F6;
+  --sand-dim: rgba(255,255,255,0.65);
+  --sand-subtle: rgba(255,255,255,0.22);
+  --sand-faint: rgba(255,255,255,0.08);
+  --black: #000000;
+  --deep: #090403;
+  --surface: #120704;
+  --panel: #150905;
+  --panel-light: #180A05;
+  --border: rgba(255,255,255,0.1);
+  --border-bright: rgba(255,255,255,0.22);
+  --border-wine: rgba(252,59,0,0.35);
+  --accent: #FF9A3D;
   --accent-dim: rgba(201,168,76,0.2);
   --font-display: 'Playfair Display', serif;
   --font-body: 'DM Sans', sans-serif;
@@ -107,9 +107,9 @@ nav.scrolled {
 .hero-bg {
   position:absolute; inset:0;
   background:
-    radial-gradient(ellipse 70% 60% at 65% 45%, rgba(127,1,31,0.18) 0%, transparent 65%),
-    radial-gradient(ellipse 40% 40% at 15% 70%, rgba(127,1,31,0.08) 0%, transparent 60%),
-    linear-gradient(160deg, #0e0608 0%, #170309 45%, #0e0608 100%);
+    radial-gradient(ellipse 70% 60% at 65% 45%, rgba(252,59,0,0.18) 0%, transparent 65%),
+    radial-gradient(ellipse 40% 40% at 15% 70%, rgba(252,59,0,0.08) 0%, transparent 60%),
+    linear-gradient(160deg, #000000 0%, #0F0603 45%, #000000 100%);
 }
 
 /* Noise texture */
@@ -213,7 +213,7 @@ nav.scrolled {
 .hero-camera-center {
   position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
   animation:heroFloat 6s ease-in-out infinite;
-  filter:drop-shadow(0 20px 60px rgba(127,1,31,0.5));
+  filter:drop-shadow(0 20px 60px rgba(252,59,0,0.5));
   z-index:3;
 }
 
@@ -249,7 +249,7 @@ nav.scrolled {
   position:absolute; top:50%; left:50%;
   width:200px; height:200px; margin:-100px 0 0 -100px;
   border-radius:50%;
-  background:radial-gradient(circle, rgba(127,1,31,0.3) 0%, transparent 70%);
+  background:radial-gradient(circle, rgba(252,59,0,0.3) 0%, transparent 70%);
   animation:glowPulse 3s ease-in-out infinite;
 }
 @keyframes glowPulse { 0%,100%{opacity:0.5;transform:scale(1);} 50%{opacity:1;transform:scale(1.15);} }
@@ -296,7 +296,7 @@ nav.scrolled {
   font-family:var(--font-mono); font-size:11px; letter-spacing:0.15em; color:var(--sand);
   text-transform:uppercase; flex-shrink:0;
 }
-.ticker-sep { color:rgba(245,235,208,0.4); }
+.ticker-sep { color:rgba(255,255,255,0.4); }
 @keyframes ticker { from{transform:translateX(0);} to{transform:translateX(-50%);} }
 
 /* ══════════════════════════════
@@ -368,9 +368,9 @@ nav.scrolled {
   position:absolute; inset:0; transition:transform 0.7s var(--ease-out);
 }
 .cat-card:hover .cat-bg-layer { transform:scale(1.06); }
-.cat-cctv .cat-bg-layer { background:linear-gradient(160deg, #1a0308 0%, #2d0512 100%); }
-.cat-audio .cat-bg-layer { background:linear-gradient(160deg, #170208 0%, #260410 100%); }
-.cat-comp .cat-bg-layer { background:linear-gradient(160deg, #160309 0%, #21040e 100%); }
+.cat-cctv .cat-bg-layer { background:linear-gradient(160deg, #0B0502 0%, #1B0904 100%); }
+.cat-audio .cat-bg-layer { background:linear-gradient(160deg, #0F0603 0%, #1A0A04 100%); }
+.cat-comp .cat-bg-layer { background:linear-gradient(160deg, #0E0503 0%, #140702 100%); }
 
 .cat-pattern {
   position:absolute; inset:0; opacity:0.06;
@@ -434,7 +434,7 @@ nav.scrolled {
   transition:all 0.45s var(--ease-out); cursor:pointer; position:relative;
   border-radius:var(--radius);
 }
-.product-card:hover { border-color:var(--border-wine); transform:translateY(-5px); box-shadow:0 24px 60px rgba(127,1,31,0.2); }
+.product-card:hover { border-color:var(--border-wine); transform:translateY(-5px); box-shadow:0 24px 60px rgba(252,59,0,0.2); }
 
 .product-img {
   width:100%; aspect-ratio:16/10; display:flex; align-items:center; justify-content:center;
@@ -442,11 +442,11 @@ nav.scrolled {
 }
 .product-img-bg { position:absolute; inset:0; transition:transform 0.6s var(--ease-out); }
 .product-card:hover .product-img-bg { transform:scale(1.06); }
-.cctv-grad { background:linear-gradient(135deg, #1a0308 0%, #2d0512 100%); }
-.audio-grad { background:linear-gradient(135deg, #170208 0%, #260410 100%); }
-.comp-grad { background:linear-gradient(135deg, #160309 0%, #21040e 100%); }
+.cctv-grad { background:linear-gradient(135deg, #0B0502 0%, #1B0904 100%); }
+.audio-grad { background:linear-gradient(135deg, #0F0603 0%, #1A0A04 100%); }
+.comp-grad { background:linear-gradient(135deg, #0E0503 0%, #140702 100%); }
 
-.product-emoji-wrap { position:relative; z-index:1; font-size:64px; filter:drop-shadow(0 8px 24px rgba(127,1,31,0.35)); transition:transform 0.4s var(--ease-out); }
+.product-emoji-wrap { position:relative; z-index:1; font-size:64px; filter:drop-shadow(0 8px 24px rgba(252,59,0,0.35)); transition:transform 0.4s var(--ease-out); }
 .product-card:hover .product-emoji-wrap { transform:translateY(-4px) scale(1.05); }
 
 .product-badge {
@@ -529,7 +529,7 @@ nav.scrolled {
 #wa-banner { padding:120px 52px; position:relative; overflow:hidden; }
 .wa-bg {
   position:absolute; inset:0;
-  background:radial-gradient(ellipse 60% 70% at 50% 50%, rgba(127,1,31,0.15) 0%, transparent 65%);
+  background:radial-gradient(ellipse 60% 70% at 50% 50%, rgba(252,59,0,0.15) 0%, transparent 65%);
 }
 .wa-inner { max-width:820px; margin:0 auto; text-align:center; position:relative; z-index:1; }
 .wa-icon-big { font-size:56px; margin-bottom:28px; display:block; animation:waBounce 2.5s ease-in-out infinite; }
@@ -634,7 +634,7 @@ footer { background:var(--deep); border-top:1px solid var(--border); padding:80p
 .footer-wa-link:hover { opacity:0.7; }
 
 /* ── TOAST ── */
-.toast { position:fixed; bottom:32px; left:50%; transform:translateX(-50%) translateY(16px); background:var(--wine); color:var(--sand); padding:12px 26px; font-family:var(--font-body); font-size:13px; font-weight:600; letter-spacing:0.04em; z-index:9000; opacity:0; transition:all 0.4s var(--ease-out); pointer-events:none; white-space:nowrap; border-radius:var(--radius); border:1px solid rgba(245,235,208,0.15); }
+.toast { position:fixed; bottom:32px; left:50%; transform:translateX(-50%) translateY(16px); background:var(--wine); color:var(--sand); padding:12px 26px; font-family:var(--font-body); font-size:13px; font-weight:600; letter-spacing:0.04em; z-index:9000; opacity:0; transition:all 0.4s var(--ease-out); pointer-events:none; white-space:nowrap; border-radius:var(--radius); border:1px solid rgba(255,255,255,0.15); }
 .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
 
 /* ══════════════════════════════
@@ -815,18 +815,18 @@ footer { background:var(--deep); border-top:1px solid var(--border); padding:80p
         <div class="hero-camera-center">
           <svg width="160" height="160" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg">
             <!-- Camera body -->
-            <rect x="18" y="54" width="96" height="56" rx="10" fill="#2a0914" stroke="#7F011F" stroke-width="1.5"/>
+            <rect x="18" y="54" width="96" height="56" rx="10" fill="#180A05" stroke="#FC3B00" stroke-width="1.5"/>
             <!-- Lens outer ring -->
-            <circle cx="68" cy="82" r="24" fill="#1a0308" stroke="#7F011F" stroke-width="1.5"/>
+            <circle cx="68" cy="82" r="24" fill="#0B0502" stroke="#FC3B00" stroke-width="1.5"/>
             <!-- Lens mid ring -->
-            <circle cx="68" cy="82" r="16" fill="#200610" stroke="rgba(127,1,31,0.5)" stroke-width="1"/>
+            <circle cx="68" cy="82" r="16" fill="#150905" stroke="rgba(252,59,0,0.5)" stroke-width="1"/>
             <!-- Lens inner -->
-            <circle cx="68" cy="82" r="9" fill="#7F011F" opacity="0.8"/>
-            <circle cx="68" cy="82" r="4" fill="#F5EBD0" opacity="0.9"/>
+            <circle cx="68" cy="82" r="9" fill="#FC3B00" opacity="0.8"/>
+            <circle cx="68" cy="82" r="4" fill="#FFFFFF" opacity="0.9"/>
             <!-- Lens gleam -->
-            <circle cx="63" cy="77" r="2.5" fill="rgba(245,235,208,0.5)"/>
+            <circle cx="63" cy="77" r="2.5" fill="rgba(255,255,255,0.5)"/>
             <!-- Top ridge -->
-            <rect x="30" y="44" width="36" height="12" rx="4" fill="#2a0914" stroke="#7F011F" stroke-width="1.2"/>
+            <rect x="30" y="44" width="36" height="12" rx="4" fill="#180A05" stroke="#FC3B00" stroke-width="1.2"/>
             <!-- Status LED -->
             <circle cx="100" cy="65" r="5" fill="#22c55e" opacity="0.9"/>
             <circle cx="100" cy="65" r="8" fill="#22c55e" opacity="0.15">
@@ -834,17 +834,17 @@ footer { background:var(--deep); border-top:1px solid var(--border); padding:80p
               <animate attributeName="opacity" values="0.15;0;0.15" dur="2s" repeatCount="indefinite"/>
             </circle>
             <!-- Bracket arm -->
-            <rect x="114" y="68" width="32" height="6" rx="3" fill="#200610" stroke="#7F011F" stroke-width="1.2"/>
-            <rect x="140" y="56" width="6" height="52" rx="3" fill="#200610" stroke="#7F011F" stroke-width="1.2"/>
+            <rect x="114" y="68" width="32" height="6" rx="3" fill="#150905" stroke="#FC3B00" stroke-width="1.2"/>
+            <rect x="140" y="56" width="6" height="52" rx="3" fill="#150905" stroke="#FC3B00" stroke-width="1.2"/>
             <!-- Scan lines -->
-            <line x1="18" y1="68" x2="114" y2="68" stroke="rgba(127,1,31,0.15)" stroke-width="1"/>
-            <line x1="18" y1="82" x2="114" y2="82" stroke="rgba(127,1,31,0.15)" stroke-width="1"/>
-            <line x1="18" y1="96" x2="114" y2="96" stroke="rgba(127,1,31,0.15)" stroke-width="1"/>
+            <line x1="18" y1="68" x2="114" y2="68" stroke="rgba(252,59,0,0.15)" stroke-width="1"/>
+            <line x1="18" y1="82" x2="114" y2="82" stroke="rgba(252,59,0,0.15)" stroke-width="1"/>
+            <line x1="18" y1="96" x2="114" y2="96" stroke="rgba(252,59,0,0.15)" stroke-width="1"/>
             <!-- Connectors -->
-            <rect x="24" y="78" width="8" height="8" rx="1" fill="rgba(127,1,31,0.4)" stroke="rgba(127,1,31,0.6)" stroke-width="1"/>
+            <rect x="24" y="78" width="8" height="8" rx="1" fill="rgba(252,59,0,0.4)" stroke="rgba(252,59,0,0.6)" stroke-width="1"/>
             <!-- Decorative lines radiating -->
-            <line x1="44" y1="82" x2="20" y2="62" stroke="rgba(127,1,31,0.2)" stroke-width="1" stroke-dasharray="3 4"/>
-            <line x1="44" y1="82" x2="20" y2="102" stroke="rgba(127,1,31,0.2)" stroke-width="1" stroke-dasharray="3 4"/>
+            <line x1="44" y1="82" x2="20" y2="62" stroke="rgba(252,59,0,0.2)" stroke-width="1" stroke-dasharray="3 4"/>
+            <line x1="44" y1="82" x2="20" y2="102" stroke="rgba(252,59,0,0.2)" stroke-width="1" stroke-dasharray="3 4"/>
           </svg>
         </div>
 
