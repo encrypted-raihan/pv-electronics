@@ -10,20 +10,22 @@
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --black: #050507;
-    --deep: #0a0a10;
-    --surface: #10101a;
-    --panel: #14141f;
-    --border: rgba(255,255,255,0.07);
-    --border-bright: rgba(255,255,255,0.15);
-    --gold: #c8a96e;
-    --gold-light: #e8c98e;
-    --gold-dim: rgba(200,169,110,0.3);
-    --teal: #00d4b8;
-    --teal-dim: rgba(0,212,184,0.15);
-    --white: #f0ede8;
-    --muted: rgba(240,237,232,0.45);
-    --subtle: rgba(240,237,232,0.2);
+    --black: #06080f;
+    --deep: #0c1120;
+    --surface: #111827;
+    --panel: #162035;
+    --border: rgba(99,179,237,0.12);
+    --border-bright: rgba(99,179,237,0.28);
+    --gold: #3b82f6;
+    --gold-light: #60a5fa;
+    --gold-dim: rgba(59,130,246,0.25);
+    --teal: #38bdf8;
+    --teal-dim: rgba(56,189,248,0.15);
+    --accent: #f97316;
+    --accent-dim: rgba(249,115,22,0.2);
+    --white: #eef2ff;
+    --muted: rgba(226,232,240,0.55);
+    --subtle: rgba(226,232,240,0.22);
     --font-display: 'Cormorant Garamond', serif;
     --font-ui: 'Syne', sans-serif;
     --font-mono: 'Space Mono', monospace;
@@ -59,7 +61,6 @@
   }
   body:hover .cursor-ring { opacity: 1; }
 
-  /* SCROLLBAR */
   ::-webkit-scrollbar { width: 3px; }
   ::-webkit-scrollbar-track { background: var(--black); }
   ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 2px; }
@@ -69,12 +70,12 @@
     position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
     display: flex; align-items: center; justify-content: space-between;
     padding: 20px 48px;
-    background: linear-gradient(to bottom, rgba(5,5,7,0.95) 0%, transparent 100%);
+    background: linear-gradient(to bottom, rgba(6,8,15,0.97) 0%, transparent 100%);
     backdrop-filter: blur(0px);
     transition: all 0.4s ease;
   }
   nav.scrolled {
-    background: rgba(5,5,7,0.92);
+    background: rgba(6,8,15,0.94);
     backdrop-filter: blur(20px);
     border-bottom: 1px solid var(--border);
     padding: 14px 48px;
@@ -117,9 +118,9 @@
     letter-spacing: 0.1em; text-transform: uppercase;
     transition: all 0.3s; display: flex; align-items: center; gap: 8px;
   }
-  .cart-btn:hover { background: var(--gold); border-color: var(--gold); color: var(--black); }
+  .cart-btn:hover { background: var(--gold); border-color: var(--gold); color: #fff; }
   .cart-count {
-    background: var(--gold); color: var(--black); border-radius: 50%;
+    background: var(--accent); color: #fff; border-radius: 50%;
     width: 18px; height: 18px; font-size: 10px; font-weight: 700;
     display: flex; align-items: center; justify-content: center;
     display: none;
@@ -159,15 +160,15 @@
   }
   .hero-bg {
     position: absolute; inset: 0;
-    background: radial-gradient(ellipse 80% 60% at 60% 40%, rgba(0,212,184,0.04) 0%, transparent 60%),
-                radial-gradient(ellipse 60% 50% at 20% 70%, rgba(200,169,110,0.06) 0%, transparent 50%),
-                linear-gradient(135deg, #050507 0%, #0a0a14 50%, #050507 100%);
+    background: radial-gradient(ellipse 80% 60% at 60% 40%, rgba(59,130,246,0.08) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 50% at 20% 70%, rgba(249,115,22,0.05) 0%, transparent 50%),
+                linear-gradient(135deg, #06080f 0%, #0d1528 50%, #06080f 100%);
   }
   .hero-grid {
     position: absolute; inset: 0; opacity: 0.04;
     background-image:
-      linear-gradient(var(--white) 1px, transparent 1px),
-      linear-gradient(90deg, var(--white) 1px, transparent 1px);
+      linear-gradient(rgba(99,179,237,0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(99,179,237,0.06) 1px, transparent 1px);
     background-size: 60px 60px;
   }
   .hero-content {
@@ -182,7 +183,7 @@
     display: flex; align-items: center; justify-content: center; gap: 12px;
   }
   .hero-eyebrow::before, .hero-eyebrow::after {
-    content: ''; width: 40px; height: 1px; background: var(--teal); opacity: 0.5;
+    content: ''; width: 40px; height: 1px; background: var(--teal); opacity: 0.6;
   }
   .hero-title {
     font-family: var(--font-display); font-size: clamp(52px, 9vw, 110px);
@@ -203,13 +204,13 @@
     opacity: 0; animation: fadeUp 0.9s 0.9s forwards;
   }
   .btn-primary {
-    padding: 16px 36px; background: var(--gold); color: var(--black);
+    padding: 16px 36px; background: var(--gold); color: #fff;
     font-family: var(--font-ui); font-size: 12px; font-weight: 700;
     letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none;
     border: none; cursor: pointer; transition: all 0.3s;
     clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
   }
-  .btn-primary:hover { background: var(--gold-light); transform: translateY(-2px); box-shadow: 0 12px 40px rgba(200,169,110,0.3); }
+  .btn-primary:hover { background: var(--gold-light); transform: translateY(-2px); box-shadow: 0 12px 40px rgba(59,130,246,0.35); }
   .btn-secondary {
     padding: 16px 36px; background: transparent;
     border: 1px solid var(--border-bright); color: var(--white);
@@ -234,8 +235,8 @@
     animation: floatWave 8s ease-in-out infinite;
     opacity: 0.15;
   }
-  .geo1 { width: 200px; height: 200px; border: 1px solid var(--gold-dim); border-radius: 50%; top: 10%; left: 10%; animation: spin 40s linear infinite; }
-  .geo2 { width: 100px; height: 100px; border: 1px solid var(--teal-dim); right: 15%; bottom: 20%; animation: spin 30s linear infinite reverse; }
+  .geo1 { width: 200px; height: 200px; border: 1px solid rgba(59,130,246,0.15); border-radius: 50%; top: 10%; left: 10%; animation: spin 40s linear infinite; }
+  .geo2 { width: 100px; height: 100px; border: 1px solid rgba(56,189,248,0.12); right: 15%; bottom: 20%; animation: spin 30s linear infinite reverse; }
 
   @keyframes floatRotate {
     0%,100% { transform: translateY(0) rotate(0deg); }
@@ -323,9 +324,9 @@
     transition: transform 0.6s cubic-bezier(0.22,1,0.36,1);
   }
   .cat-card:hover .cat-bg { transform: scale(1.06); }
-  .cat-cctv .cat-bg { background: linear-gradient(135deg, #0a0a14 0%, #0f1a2e 100%); }
-  .cat-audio .cat-bg { background: linear-gradient(135deg, #0a0e0a 0%, #0d1a10 100%); }
-  .cat-comp .cat-bg { background: linear-gradient(135deg, #14100a 0%, #1a1408 100%); }
+  .cat-cctv .cat-bg { background: linear-gradient(135deg, #060d1a 0%, #0d1e38 100%); }
+  .cat-audio .cat-bg { background: linear-gradient(135deg, #07100f 0%, #0b1e1b 100%); }
+  .cat-comp .cat-bg { background: linear-gradient(135deg, #110d06 0%, #1c1408 100%); }
   .cat-deco {
     position: absolute; inset: 0; opacity: 0.5;
     display: flex; align-items: center; justify-content: center; font-size: 120px;
@@ -369,7 +370,7 @@
     transition: all 0.25s;
   }
   .filter-btn.active, .filter-btn:hover {
-    background: var(--gold); border-color: var(--gold); color: var(--black);
+    background: var(--gold); border-color: var(--gold); color: #fff;
   }
   .products-grid {
     display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px;
@@ -389,13 +390,13 @@
     transition: transform 0.5s ease;
   }
   .product-card:hover .product-img-bg { transform: scale(1.08); }
-  .cctv-grad { background: linear-gradient(135deg, #080b14 0%, #0d1525 100%); }
-  .audio-grad { background: linear-gradient(135deg, #080e08 0%, #0d180d 100%); }
-  .comp-grad { background: linear-gradient(135deg, #100e06 0%, #1a1608 100%); }
+  .cctv-grad { background: linear-gradient(135deg, #060d1a 0%, #0d1e38 100%); }
+  .audio-grad { background: linear-gradient(135deg, #07100f 0%, #0b1e1b 100%); }
+  .comp-grad { background: linear-gradient(135deg, #110d06 0%, #1c1408 100%); }
   .product-emoji { position: relative; z-index: 1; font-size: 70px; filter: drop-shadow(0 0 20px rgba(200,169,110,0.2)); }
   .product-badge {
     position: absolute; top: 12px; right: 12px; z-index: 2;
-    background: var(--gold); color: var(--black);
+    background: var(--accent); color: #fff;
     font-family: var(--font-mono); font-size: 9px; font-weight: 700;
     letter-spacing: 0.1em; padding: 4px 10px; text-transform: uppercase;
   }
@@ -430,8 +431,8 @@
     letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer;
     transition: all 0.25s; display: flex; align-items: center; gap: 6px;
   }
-  .add-cart-btn:hover { background: var(--gold); border-color: var(--gold); color: var(--black); }
-  .add-cart-btn.added { background: var(--teal); border-color: var(--teal); color: var(--black); }
+  .add-cart-btn:hover { background: var(--gold); border-color: var(--gold); color: #fff; }
+  .add-cart-btn.added { background: var(--teal); border-color: var(--teal); color: #fff; }
 
   /* ── WHATSAPP BANNER ── */
   #wa-banner {
@@ -483,7 +484,7 @@
     width: 36px; height: 36px; cursor: pointer; font-size: 18px;
     display: flex; align-items: center; justify-content: center; transition: all 0.25s;
   }
-  .cart-close:hover { background: var(--gold); border-color: var(--gold); color: var(--black); }
+  .cart-close:hover { background: var(--gold); border-color: var(--gold); color: #fff; }
   .cart-items { flex: 1; overflow-y: auto; padding: 24px 28px; }
   .cart-empty {
     text-align: center; padding: 60px 20px;
@@ -506,7 +507,7 @@
     width: 26px; height: 26px; cursor: pointer; font-size: 14px;
     display: flex; align-items: center; justify-content: center; transition: all 0.2s;
   }
-  .qty-btn:hover { background: var(--gold); border-color: var(--gold); color: var(--black); }
+  .qty-btn:hover { background: var(--gold); border-color: var(--gold); color: #fff; }
   .qty-num { font-family: var(--font-mono); font-size: 13px; min-width: 20px; text-align: center; }
   .cart-item-remove {
     background: none; border: none; color: var(--subtle); cursor: pointer; font-size: 14px;
@@ -549,7 +550,7 @@
     width: 40px; height: 40px; cursor: pointer; font-size: 18px;
     display: flex; align-items: center; justify-content: center;
   }
-  .modal-close:hover { background: var(--gold); color: var(--black); border-color: var(--gold); }
+  .modal-close:hover { background: var(--gold); color: #fff; border-color: var(--gold); }
   .modal-body { display: grid; grid-template-columns: 1fr 1fr; }
   .modal-img {
     aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 100px;
@@ -564,7 +565,7 @@
   .modal-spec-val { font-size: 13px; font-weight: 600; margin-top: 2px; }
   .modal-price { font-family: var(--font-display); font-size: 36px; font-weight: 600; color: var(--gold); margin-bottom: 20px; }
   .modal-add-btn {
-    width: 100%; padding: 16px; background: var(--gold); color: var(--black);
+    width: 100%; padding: 16px; background: var(--gold); color: #fff;
     border: none; font-family: var(--font-ui); font-size: 13px; font-weight: 700;
     letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: all 0.3s;
   }
@@ -603,7 +604,7 @@
   /* ── TOAST ── */
   .toast {
     position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%) translateY(20px);
-    background: var(--gold); color: var(--black);
+    background: var(--gold); color: #fff;
     padding: 12px 24px; font-family: var(--font-ui); font-size: 13px; font-weight: 700;
     letter-spacing: 0.05em; z-index: 9000; opacity: 0;
     transition: all 0.35s; pointer-events: none; white-space: nowrap;
@@ -614,8 +615,8 @@
   .orb {
     position: absolute; border-radius: 50%; pointer-events: none; filter: blur(80px);
   }
-  .orb-gold { width: 400px; height: 400px; background: rgba(200,169,110,0.05); }
-  .orb-teal { width: 300px; height: 300px; background: rgba(0,212,184,0.04); }
+  .orb-gold { width: 400px; height: 400px; background: rgba(59,130,246,0.07); }
+  .orb-teal { width: 300px; height: 300px; background: rgba(56,189,248,0.05); }
 
   /* SOUND WAVE ANIM */
   .wave-visual {
@@ -714,21 +715,21 @@
 
   <div class="hero-float cctv-svg">
     <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="60" cy="60" r="58" stroke="#c8a96e" stroke-width="1" stroke-dasharray="4 8" opacity="0.5"/>
-      <rect x="20" y="48" width="60" height="28" rx="6" stroke="#c8a96e" stroke-width="1.5" fill="rgba(200,169,110,0.05)"/>
-      <circle cx="52" cy="62" r="10" stroke="#c8a96e" stroke-width="1.5" fill="none"/>
-      <circle cx="52" cy="62" r="4" fill="#c8a96e" opacity="0.8"/>
-      <line x1="80" y1="58" x2="100" y2="50" stroke="#c8a96e" stroke-width="1.5"/>
-      <line x1="80" y1="66" x2="100" y2="74" stroke="#c8a96e" stroke-width="1.5"/>
-      <line x1="100" y1="50" x2="100" y2="74" stroke="#c8a96e" stroke-width="1.5"/>
-      <circle cx="100" cy="62" r="3" fill="#00d4b8" opacity="0.9"/>
+      <circle cx="60" cy="60" r="58" stroke="#3b82f6" stroke-width="1" stroke-dasharray="4 8" opacity="0.5"/>
+      <rect x="20" y="48" width="60" height="28" rx="6" stroke="#3b82f6" stroke-width="1.5" fill="rgba(59,130,246,0.06)"/>
+      <circle cx="52" cy="62" r="10" stroke="#3b82f6" stroke-width="1.5" fill="none"/>
+      <circle cx="52" cy="62" r="4" fill="#60a5fa" opacity="0.9"/>
+      <line x1="80" y1="58" x2="100" y2="50" stroke="#3b82f6" stroke-width="1.5"/>
+      <line x1="80" y1="66" x2="100" y2="74" stroke="#3b82f6" stroke-width="1.5"/>
+      <line x1="100" y1="50" x2="100" y2="74" stroke="#3b82f6" stroke-width="1.5"/>
+      <circle cx="100" cy="62" r="3" fill="#f97316" opacity="0.9"/>
     </svg>
   </div>
 
   <div class="hero-float wave-svg">
     <svg viewBox="0 0 140 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M0 40 Q17.5 10 35 40 Q52.5 70 70 40 Q87.5 10 105 40 Q122.5 70 140 40" stroke="#00d4b8" stroke-width="1.5" fill="none"/>
-      <path d="M0 40 Q17.5 20 35 40 Q52.5 60 70 40 Q87.5 20 105 40 Q122.5 60 140 40" stroke="#c8a96e" stroke-width="1" fill="none" opacity="0.6"/>
+      <path d="M0 40 Q17.5 10 35 40 Q52.5 70 70 40 Q87.5 10 105 40 Q122.5 70 140 40" stroke="#38bdf8" stroke-width="1.5" fill="none"/>
+      <path d="M0 40 Q17.5 20 35 40 Q52.5 60 70 40 Q87.5 20 105 40 Q122.5 60 140 40" stroke="#3b82f6" stroke-width="1" fill="none" opacity="0.6"/>
     </svg>
   </div>
 
@@ -807,7 +808,7 @@
   <div class="categories-inner">
     <div class="section-header reveal">
       <div class="section-label">Our Expertise</div>
-      <h2 class="section-title">Three Pillars of <em style="font-style:italic;color:var(--gold)">Excellence</em></h2>
+      <h2 class="section-title">Three Pillars of <em style="font-style:italic;color:var(--teal)">Excellence</em></h2>
     </div>
     <div class="cats-grid reveal">
       <div class="cat-card cat-cctv" onclick="filterProducts('cctv')">
@@ -852,7 +853,7 @@
   <div class="products-inner">
     <div class="section-header reveal">
       <div class="section-label">Products & Systems</div>
-      <h2 class="section-title">Our <em style="font-style:italic;color:var(--gold)">Catalogue</em></h2>
+      <h2 class="section-title">Our <em style="font-style:italic;color:var(--teal)">Catalogue</em></h2>
     </div>
     <div class="filter-bar reveal">
       <button class="filter-btn active" onclick="filterProducts('all',this)">All Products</button>
@@ -1280,8 +1281,8 @@ function animCursor() {
 }
 animCursor();
 document.querySelectorAll('a,button,.product-card,.cat-card').forEach(el => {
-  el.addEventListener('mouseenter', () => { ring.style.transform = 'translate(-50%,-50%) scale(1.8)'; ring.style.borderColor = 'var(--gold)'; });
-  el.addEventListener('mouseleave', () => { ring.style.transform = 'translate(-50%,-50%) scale(1)'; ring.style.borderColor = 'var(--gold-light)'; });
+  el.addEventListener('mouseenter', () => { ring.style.transform = 'translate(-50%,-50%) scale(1.8)'; ring.style.borderColor = '#60a5fa'; });
+  el.addEventListener('mouseleave', () => { ring.style.transform = 'translate(-50%,-50%) scale(1)'; ring.style.borderColor = '#60a5fa'; });
 });
 
 // On touch devices, hide cursor
