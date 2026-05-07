@@ -98,6 +98,88 @@ nav.scrolled {
 .overlay.show { display:block; }
 
 /* ══════════════════════════════
+   TEXT EFFECTS SYSTEM
+══════════════════════════════ */
+
+/* Shared split units */
+.split-line, .split-word, .split-char {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+}
+.split-word { margin-right: 0.22em; }
+.anim-inner { display: inline-block; will-change: transform, opacity, filter; }
+
+/* EFFECT: MASK REVEAL (hero title, section titles) */
+.fx-mask .split-word { overflow: hidden; vertical-align: bottom; }
+.fx-mask .anim-inner {
+  transform: translateY(110%);
+  transition: transform 0.95s cubic-bezier(0.16,1,0.3,1);
+}
+.fx-mask.revealed .anim-inner { transform: translateY(0); }
+
+/* EFFECT: FADE UP (general paragraphs, eyebrows) */
+.fx-fade-up .anim-inner {
+  opacity: 0;
+  transform: translateY(56px);
+  transition: opacity 0.85s cubic-bezier(0.16,1,0.3,1),
+              transform 0.85s cubic-bezier(0.16,1,0.3,1);
+}
+.fx-fade-up.revealed .anim-inner { opacity: 1; transform: translateY(0); }
+
+/* EFFECT: BLUR IN (feature titles, stat numbers) */
+.fx-blur-in .anim-inner {
+  opacity: 0;
+  filter: blur(14px);
+  transform: translateY(18px);
+  transition: opacity 0.75s ease, filter 0.75s ease, transform 0.75s ease;
+}
+.fx-blur-in.revealed .anim-inner { opacity: 1; filter: blur(0); transform: translateY(0); }
+
+/* EFFECT: SLIDE LEFT (lines / process steps) */
+.fx-slide-left .anim-inner {
+  opacity: 0;
+  transform: translateX(-72px);
+  transition: opacity 0.85s ease, transform 0.85s cubic-bezier(0.16,1,0.3,1);
+}
+.fx-slide-left.revealed .anim-inner { opacity: 1; transform: translateX(0); }
+
+/* EFFECT: SCALE IN spring (badges, small labels) */
+.fx-scale-in .anim-inner {
+  opacity: 0;
+  transform: scale(0.3);
+  transition: opacity 0.6s cubic-bezier(0.34,1.56,0.64,1),
+              transform 0.6s cubic-bezier(0.34,1.56,0.64,1);
+}
+.fx-scale-in.revealed .anim-inner { opacity: 1; transform: scale(1); }
+
+/* EFFECT: ROTATE X 3D (category names) */
+.fx-rotate { perspective: 900px; }
+.fx-rotate .split-char { overflow: visible; }
+.fx-rotate .anim-inner {
+  opacity: 0;
+  transform: rotateX(-90deg) translateY(28px);
+  transform-origin: top center;
+  transition: opacity 0.65s ease, transform 0.65s cubic-bezier(0.16,1,0.3,1);
+}
+.fx-rotate.revealed .anim-inner { opacity: 1; transform: rotateX(0) translateY(0); }
+
+/* EFFECT: SCROLL PROGRESS WORDS (wa-banner paragraph) */
+.fx-scroll-progress .split-word .anim-inner { color: #2a1008; transition: color 0.08s linear; }
+.fx-scroll-progress .split-word.lit .anim-inner { color: var(--sand-dim); }
+
+/* EFFECT: STROKE DRAW (story headline accent) */
+.fx-stroke .anim-inner {
+  color: transparent;
+  -webkit-text-stroke: 1px var(--wine-mid);
+  transition: color 0.55s ease, -webkit-text-stroke 0.55s ease;
+}
+.fx-stroke.revealed .anim-inner {
+  color: var(--wine);
+  -webkit-text-stroke: 0px transparent;
+}
+
+/* ══════════════════════════════
    HERO
 ══════════════════════════════ */
 #hero {
@@ -111,15 +193,11 @@ nav.scrolled {
     radial-gradient(ellipse 40% 40% at 15% 70%, rgba(252,59,0,0.08) 0%, transparent 60%),
     linear-gradient(160deg, #000000 0%, #0F0603 45%, #000000 100%);
 }
-
-/* Noise texture */
 .hero-noise {
   position:absolute; inset:0; opacity:0.028; pointer-events:none;
   background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
   background-size:200px 200px;
 }
-
-/* Subtle grid */
 .hero-grid {
   position:absolute; inset:0; opacity:0.025;
   background-image:linear-gradient(var(--sand-subtle) 1px, transparent 1px), linear-gradient(90deg, var(--sand-subtle) 1px, transparent 1px);
@@ -133,26 +211,38 @@ nav.scrolled {
   font-family:var(--font-mono); font-size:10.5px; letter-spacing:0.28em; color:var(--wine-mid);
   text-transform:uppercase; margin-bottom:28px;
   display:flex; align-items:center; gap:12px;
-  opacity:0; animation:fadeUp 0.8s 0.2s forwards;
+  opacity:0; animation:heroFadeUp 0.8s 0.2s forwards;
 }
 .hero-eyebrow::before { content:''; width:28px; height:1px; background:var(--wine-mid); }
+
+/* Hero title uses mask reveal — triggered via JS after 300ms */
 .hero-title {
   font-family:var(--font-display); font-size:clamp(48px, 6.5vw, 86px);
   font-weight:900; line-height:0.93; letter-spacing:-0.02em;
   margin-bottom:28px;
-  opacity:0; animation:fadeUp 0.9s 0.4s forwards;
 }
-.hero-title .t-normal { font-weight:400; font-style:italic; color:var(--sand-dim); display:block; }
-.hero-title .t-bold { display:block; color:var(--sand); }
+.hero-title .t-line { display:block; overflow:hidden; }
+.hero-title .t-line .anim-inner {
+  display:block;
+  transform: translateY(110%);
+  transition: transform 1s cubic-bezier(0.16,1,0.3,1);
+}
+.hero-title.revealed .t-line .anim-inner { transform: translateY(0); }
+.hero-title .t-line:nth-child(1) .anim-inner { transition-delay: 0ms; }
+.hero-title .t-line:nth-child(2) .anim-inner { transition-delay: 120ms; }
+.hero-title .t-line:nth-child(3) .anim-inner { transition-delay: 240ms; }
+.hero-title .t-normal { font-weight:400; font-style:italic; color:var(--sand-dim); }
+.hero-title .t-bold { color:var(--sand); }
 .hero-title .t-accent { color:var(--wine); }
+
 .hero-desc {
   font-size:16px; line-height:1.75; color:var(--sand-dim); max-width:440px;
   margin-bottom:44px; font-weight:300;
-  opacity:0; animation:fadeUp 0.9s 0.6s forwards;
+  opacity:0; animation:heroFadeUp 0.9s 0.85s forwards;
 }
 .hero-ctas {
   display:flex; gap:14px; flex-wrap:wrap;
-  opacity:0; animation:fadeUp 0.9s 0.8s forwards;
+  opacity:0; animation:heroFadeUp 0.9s 1.05s forwards;
 }
 .btn-primary {
   padding:15px 34px; background:var(--wine); color:var(--sand);
@@ -178,7 +268,7 @@ nav.scrolled {
 
 .hero-trust {
   display:flex; gap:28px; margin-top:52px; flex-wrap:wrap;
-  opacity:0; animation:fadeUp 0.9s 1s forwards;
+  opacity:0; animation:heroFadeUp 0.9s 1.25s forwards;
 }
 .trust-item { display:flex; align-items:center; gap:8px; }
 .trust-dot { width:6px; height:6px; background:var(--wine); border-radius:50%; }
@@ -188,43 +278,35 @@ nav.scrolled {
 .hero-right {
   display:flex; align-items:center; justify-content:center; position:relative;
   height:520px;
-  opacity:0; animation:fadeIn 1.2s 0.6s forwards;
+  opacity:0; animation:heroFadeIn 1.2s 0.6s forwards;
 }
-
 .hero-3d-scene {
   position:relative; width:380px; height:380px;
   transform-style:preserve-3d;
   perspective:800px;
 }
-
-/* Orbit rings */
 .orbit-ring {
   position:absolute; border-radius:50%;
-  border:1px solid var(--border-wine); 
+  border:1px solid var(--border-wine);
   top:50%; left:50%; transform-origin:50% 50%;
 }
 .orbit-ring-1 { width:320px; height:320px; margin:-160px 0 0 -160px; animation:orbitSpin 18s linear infinite; }
 .orbit-ring-2 { width:220px; height:220px; margin:-110px 0 0 -110px; animation:orbitSpin 12s linear infinite reverse; border-style:dashed; opacity:0.5; }
 .orbit-ring-3 { width:420px; height:420px; margin:-210px 0 0 -210px; animation:orbitSpin 28s linear infinite; opacity:0.3; }
-
 @keyframes orbitSpin { from{transform:rotate(0deg);} to{transform:rotate(360deg);} }
 
-/* Center camera */
 .hero-camera-center {
   position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
   animation:heroFloat 6s ease-in-out infinite;
   filter:drop-shadow(0 20px 60px rgba(252,59,0,0.5));
   z-index:3;
 }
-
 @keyframes heroFloat {
   0%,100% { transform:translate(-50%,-50%) translateY(0) rotateY(0deg); }
   25% { transform:translate(-50%,-50%) translateY(-12px) rotateY(8deg); }
   50% { transform:translate(-50%,-50%) translateY(-6px) rotateY(-4deg); }
   75% { transform:translate(-50%,-50%) translateY(-16px) rotateY(6deg); }
 }
-
-/* Satellite items on orbit */
 .orbit-item {
   position:absolute; top:50%; left:50%;
   transform-origin:0 0;
@@ -236,15 +318,11 @@ nav.scrolled {
   background:var(--panel-light); border:1px solid var(--border-wine);
   display:flex; align-items:center; justify-content:center; font-size:18px;
   box-shadow:0 4px 20px rgba(0,0,0,0.4);
-  transition:transform 0.3s;
 }
-
 @keyframes orbitItem {
   from { transform:rotate(var(--start)) translateX(var(--radius,160px)) rotate(calc(-1 * var(--start))); }
   to   { transform:rotate(calc(var(--start) + 360deg)) translateX(var(--radius,160px)) rotate(calc(-1 * (var(--start) + 360deg))); }
 }
-
-/* Glow pulse */
 .center-glow {
   position:absolute; top:50%; left:50%;
   width:200px; height:200px; margin:-100px 0 0 -100px;
@@ -254,7 +332,6 @@ nav.scrolled {
 }
 @keyframes glowPulse { 0%,100%{opacity:0.5;transform:scale(1);} 50%{opacity:1;transform:scale(1.15);} }
 
-/* Floating cards */
 .hero-card {
   position:absolute; background:rgba(32,6,16,0.85); border:1px solid var(--border-wine);
   backdrop-filter:blur(16px); padding:12px 18px; border-radius:10px;
@@ -273,13 +350,13 @@ nav.scrolled {
 .scroll-hint {
   position:absolute; bottom:36px; left:52px;
   display:flex; align-items:center; gap:12px;
-  opacity:0; animation:fadeUp 1s 1.4s forwards;
+  opacity:0; animation:heroFadeUp 1s 1.6s forwards;
 }
 .scroll-hint-line { width:40px; height:1px; background:linear-gradient(to right, var(--wine), transparent); }
 .scroll-hint-text { font-family:var(--font-mono); font-size:9.5px; color:var(--sand-dim); letter-spacing:0.2em; text-transform:uppercase; }
 
-@keyframes fadeUp { from{opacity:0;transform:translateY(28px);} to{opacity:1;transform:translateY(0);} }
-@keyframes fadeIn { from{opacity:0;} to{opacity:1;} }
+@keyframes heroFadeUp { from{opacity:0;transform:translateY(28px);} to{opacity:1;transform:translateY(0);} }
+@keyframes heroFadeIn { from{opacity:0;} to{opacity:1;} }
 
 /* ══════════════════════════════
    STATS TICKER
@@ -305,6 +382,7 @@ nav.scrolled {
 #story { padding:160px 52px; position:relative; overflow:hidden; }
 .story-inner { max-width:1200px; margin:0 auto; }
 
+/* Legacy reveal for non-text elements */
 .reveal { opacity:0; transform:translateY(36px); transition:opacity 0.9s var(--ease-out), transform 0.9s var(--ease-out); }
 .reveal.visible { opacity:1; transform:translateY(0); }
 
@@ -319,8 +397,6 @@ nav.scrolled {
   font-family:var(--font-display); font-size:clamp(40px, 5.5vw, 72px);
   font-weight:400; line-height:1.06; max-width:640px; margin-bottom:70px;
 }
-.story-headline strong { font-weight:700; }
-.story-headline em { font-style:italic; color:var(--wine); }
 
 .story-cols { display:grid; grid-template-columns:1.1fr 0.9fr; gap:80px; align-items:start; }
 
@@ -390,7 +466,6 @@ nav.scrolled {
 .cat-overlay-grad {
   position:absolute; inset:0;
   background:linear-gradient(to top, rgba(14,6,8,0.97) 0%, rgba(14,6,8,0.4) 55%, transparent 100%);
-  transition:opacity 0.4s;
 }
 .cat-top-badge {
   position:absolute; top:20px; left:20px;
@@ -404,6 +479,7 @@ nav.scrolled {
   transition:background 0.3s;
 }
 .cat-card:hover .cat-icon-wrap { background:var(--wine); }
+/* Cat names use fx-rotate, applied per card */
 .cat-name { font-family:var(--font-display); font-size:26px; font-weight:700; margin-bottom:8px; color:var(--sand); }
 .cat-desc { font-size:13px; color:var(--sand-dim); line-height:1.6; margin-bottom:20px; }
 .cat-arrow {
@@ -642,38 +718,16 @@ footer { background:var(--deep); border-top:1px solid var(--border); padding:80p
 ══════════════════════════════ */
 @media (max-width:1024px) {
   .hero-layout { grid-template-columns:1fr; text-align:center; justify-items:center; padding:120px 36px 48px; gap:28px; }
-
-  /* Keep the camera visible on tablet/mobile instead of hiding it */
-  .hero-right {
-    display:flex;
-    width:100%;
-    height:auto;
-    min-height:420px;
-    margin-top:8px;
-    opacity:1;
-    animation:fadeIn 1.2s 0.6s forwards;
-  }
-
-  .hero-3d-scene {
-    width:min(380px, 86vw);
-    height:min(380px, 86vw);
-    transform:scale(0.88);
-    transform-origin:center;
-  }
-
+  .hero-right { display:flex; width:100%; height:auto; min-height:420px; margin-top:8px; opacity:1; animation:heroFadeIn 1.2s 0.6s forwards; }
+  .hero-3d-scene { width:min(380px, 86vw); height:min(380px, 86vw); transform:scale(0.88); transform-origin:center; }
   .hero-desc { margin-left:auto; margin-right:auto; }
   .story-cols { grid-template-columns:1fr; gap:48px; }
   .features-grid { grid-template-columns:1fr; }
   .process-steps { grid-template-columns:1fr 1fr; gap:36px; }
   .process-steps::before { display:none; }
   .footer-grid { grid-template-columns:1fr 1fr; gap:36px; }
-
-  /* Tighten the hero ornaments so they fit cleanly in smaller screens */
   .orbit-ring-3 { opacity:0.15; }
-  .hero-card {
-    padding:10px 14px;
-    backdrop-filter:blur(12px);
-  }
+  .hero-card { padding:10px 14px; backdrop-filter:blur(12px); }
   .hero-card-1 { bottom:28px; left:-6px; }
   .hero-card-2 { top:24px; right:-6px; }
   .footer-brand { grid-column:1/-1; }
@@ -695,11 +749,7 @@ footer { background:var(--deep); border-top:1px solid var(--border); padding:80p
 @media (max-width:560px) {
   .hero-layout { padding:90px 20px 44px; }
   .hero-right { min-height:320px; margin-top:0; }
-  .hero-3d-scene {
-    width:min(320px, 92vw);
-    height:min(320px, 92vw);
-    transform:scale(0.72);
-  }
+  .hero-3d-scene { width:min(320px, 92vw); height:min(320px, 92vw); transform:scale(0.72); }
   .hero-card { padding:8px 12px; border-radius:8px; }
   .hero-card-label { font-size:8px; }
   .hero-card-value { font-size:14px; }
@@ -720,7 +770,6 @@ footer { background:var(--deep); border-top:1px solid var(--border); padding:80p
   .process-steps { grid-template-columns:1fr; }
   .hero-trust { justify-content:center; }
 }
-
 </style>
 </head>
 <body>
@@ -770,14 +819,18 @@ footer { background:var(--deep); border-top:1px solid var(--border); padding:80p
   <div class="hero-layout">
     <div class="hero-left">
       <div class="hero-eyebrow">Kottarakkara, Kerala — Since 2016</div>
-      <h1 class="hero-title">
-        <span class="t-normal">Precision</span>
-        <span class="t-bold">Security.<br><span class="t-accent">Pure</span> Sound.</span>
+
+      <!-- MASK REVEAL: hero title, line by line -->
+      <h1 class="hero-title" id="heroTitle">
+        <span class="t-line"><span class="anim-inner t-normal" style="font-style:italic;color:var(--sand-dim);">Precision</span></span>
+        <span class="t-line"><span class="anim-inner t-bold">Security.</span></span>
+        <span class="t-line"><span class="anim-inner t-bold"><span class="t-accent">Pure</span> Sound.</span></span>
       </h1>
+
       <p class="hero-desc">From 4MP smart surveillance to studio-grade audio — Parankamveettil Electronics engineers the technology that protects and elevates your space.</p>
       <div class="hero-ctas">
         <a href="#products" class="btn-primary">Explore Products</a>
-        <a href="https://wa.me/919447000000" target="_blank" class="btn-outline">
+        <a href="https://wa.me/91995523420" target="_blank" class="btn-outline">
           <span class="wa-dot"></span> Order via WhatsApp
         </a>
       </div>
@@ -791,64 +844,37 @@ footer { background:var(--deep); border-top:1px solid var(--border); padding:80p
     <div class="hero-right">
       <div class="hero-3d-scene">
         <div class="center-glow"></div>
-
-        <!-- Orbit rings -->
         <div class="orbit-ring orbit-ring-1"></div>
         <div class="orbit-ring orbit-ring-2"></div>
         <div class="orbit-ring orbit-ring-3"></div>
-
-        <!-- Orbiting icons -->
-        <div class="orbit-item" style="--start:0deg; --dur:14s; --radius:130px; --del:0s;">
-          <div class="orbit-item-inner">📷</div>
-        </div>
-        <div class="orbit-item" style="--start:90deg; --dur:14s; --radius:130px; --del:0s;">
-          <div class="orbit-item-inner">🔊</div>
-        </div>
-        <div class="orbit-item" style="--start:180deg; --dur:14s; --radius:130px; --del:0s;">
-          <div class="orbit-item-inner">⚡</div>
-        </div>
-        <div class="orbit-item" style="--start:270deg; --dur:14s; --radius:130px; --del:0s;">
-          <div class="orbit-item-inner">🔭</div>
-        </div>
-
-        <!-- Center camera SVG -->
+        <div class="orbit-item" style="--start:0deg; --dur:14s; --radius:130px; --del:0s;"><div class="orbit-item-inner">📷</div></div>
+        <div class="orbit-item" style="--start:90deg; --dur:14s; --radius:130px; --del:0s;"><div class="orbit-item-inner">🔊</div></div>
+        <div class="orbit-item" style="--start:180deg; --dur:14s; --radius:130px; --del:0s;"><div class="orbit-item-inner">⚡</div></div>
+        <div class="orbit-item" style="--start:270deg; --dur:14s; --radius:130px; --del:0s;"><div class="orbit-item-inner">🔭</div></div>
         <div class="hero-camera-center">
           <svg width="160" height="160" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <!-- Camera body -->
             <rect x="18" y="54" width="96" height="56" rx="10" fill="#180A05" stroke="#FC3B00" stroke-width="1.5"/>
-            <!-- Lens outer ring -->
             <circle cx="68" cy="82" r="24" fill="#0B0502" stroke="#FC3B00" stroke-width="1.5"/>
-            <!-- Lens mid ring -->
             <circle cx="68" cy="82" r="16" fill="#150905" stroke="rgba(252,59,0,0.5)" stroke-width="1"/>
-            <!-- Lens inner -->
             <circle cx="68" cy="82" r="9" fill="#FC3B00" opacity="0.8"/>
             <circle cx="68" cy="82" r="4" fill="#FFFFFF" opacity="0.9"/>
-            <!-- Lens gleam -->
             <circle cx="63" cy="77" r="2.5" fill="rgba(255,255,255,0.5)"/>
-            <!-- Top ridge -->
             <rect x="30" y="44" width="36" height="12" rx="4" fill="#180A05" stroke="#FC3B00" stroke-width="1.2"/>
-            <!-- Status LED -->
             <circle cx="100" cy="65" r="5" fill="#22c55e" opacity="0.9"/>
             <circle cx="100" cy="65" r="8" fill="#22c55e" opacity="0.15">
               <animate attributeName="r" values="5;12;5" dur="2s" repeatCount="indefinite"/>
               <animate attributeName="opacity" values="0.15;0;0.15" dur="2s" repeatCount="indefinite"/>
             </circle>
-            <!-- Bracket arm -->
             <rect x="114" y="68" width="32" height="6" rx="3" fill="#150905" stroke="#FC3B00" stroke-width="1.2"/>
             <rect x="140" y="56" width="6" height="52" rx="3" fill="#150905" stroke="#FC3B00" stroke-width="1.2"/>
-            <!-- Scan lines -->
             <line x1="18" y1="68" x2="114" y2="68" stroke="rgba(252,59,0,0.15)" stroke-width="1"/>
             <line x1="18" y1="82" x2="114" y2="82" stroke="rgba(252,59,0,0.15)" stroke-width="1"/>
             <line x1="18" y1="96" x2="114" y2="96" stroke="rgba(252,59,0,0.15)" stroke-width="1"/>
-            <!-- Connectors -->
             <rect x="24" y="78" width="8" height="8" rx="1" fill="rgba(252,59,0,0.4)" stroke="rgba(252,59,0,0.6)" stroke-width="1"/>
-            <!-- Decorative lines radiating -->
             <line x1="44" y1="82" x2="20" y2="62" stroke="rgba(252,59,0,0.2)" stroke-width="1" stroke-dasharray="3 4"/>
             <line x1="44" y1="82" x2="20" y2="102" stroke="rgba(252,59,0,0.2)" stroke-width="1" stroke-dasharray="3 4"/>
           </svg>
         </div>
-
-        <!-- Floating info cards -->
         <div class="hero-card hero-card-1">
           <div class="hero-card-label">Live Status</div>
           <div class="hero-card-value"><span class="status-dot"></span>HD Recording</div>
@@ -892,10 +918,19 @@ footer { background:var(--deep); border-top:1px solid var(--border); padding:80p
 <!-- ══ BRAND STORY ══ -->
 <section id="story">
   <div class="story-inner">
+
+    <!-- FADE UP: section label -->
     <div class="reveal">
       <div class="section-label">Our Story</div>
-      <h2 class="story-headline">Built for <em>Homes.</em><br>Trusted by <strong>Businesses.</strong></h2>
+      <!-- MASK REVEAL: story headline -->
+      <h2 class="story-headline">
+        <!-- "Built for" line — fx-slide-left -->
+        <span class="fx-slide-left" data-split="words" data-stagger="80" style="display:block;">Built for <em style="font-style:italic; color:var(--wine)">Homes.</em></span>
+        <!-- "Trusted by Businesses." — fx-mask -->
+        <span class="fx-mask" data-split="words" data-stagger="70" style="display:block; margin-top:4px;">Trusted by <strong>Businesses.</strong></span>
+      </h2>
     </div>
+
     <div class="story-cols">
       <div class="story-text reveal">
         <p>From surveillance to sound engineering — Parankamveettil Electronics has been Kottarakkara's cornerstone for precision electronic solutions. Every installation is crafted with care, every system calibrated for flawless performance.</p>
@@ -919,21 +954,23 @@ footer { background:var(--deep); border-top:1px solid var(--border); padding:80p
           <div class="wave-bar" style="--dur:0.9s;--del:0.18s;--max:28px;"></div>
         </div>
       </div>
+
+      <!-- BLUR IN: stat numbers -->
       <div class="story-stats reveal">
         <div class="stat-card">
-          <div class="stat-num">500+</div>
+          <div class="stat-num fx-blur-in" data-split="chars" data-stagger="35">500+</div>
           <div class="stat-label">Installations Done</div>
         </div>
         <div class="stat-card">
-          <div class="stat-num">8+</div>
+          <div class="stat-num fx-blur-in" data-split="chars" data-stagger="35">8+</div>
           <div class="stat-label">Years of Trust</div>
         </div>
         <div class="stat-card">
-          <div class="stat-num">4MP</div>
+          <div class="stat-num fx-blur-in" data-split="chars" data-stagger="35">4MP</div>
           <div class="stat-label">Smart Camera Tech</div>
         </div>
         <div class="stat-card">
-          <div class="stat-num">24/7</div>
+          <div class="stat-num fx-blur-in" data-split="chars" data-stagger="35">24/7</div>
           <div class="stat-label">Post-Install Support</div>
         </div>
       </div>
@@ -946,7 +983,8 @@ footer { background:var(--deep); border-top:1px solid var(--border); padding:80p
   <div class="cats-inner">
     <div class="section-header reveal">
       <div class="section-label">Our Expertise</div>
-      <h2 class="section-title">Three Pillars of <em style="font-style:italic;color:var(--wine)">Excellence</em></h2>
+      <!-- MASK REVEAL: section title -->
+      <h2 class="section-title fx-mask" data-split="words" data-stagger="60" style="margin-top:12px;">Three Pillars of <em style="font-style:italic;color:var(--wine)">Excellence</em></h2>
     </div>
     <div class="cats-grid reveal">
       <div class="cat-card cat-cctv" onclick="filterProducts('cctv')">
@@ -957,7 +995,8 @@ footer { background:var(--deep); border-top:1px solid var(--border); padding:80p
         <div class="cat-top-badge">01 / CCTV</div>
         <div class="cat-info">
           <div class="cat-icon-wrap">🎥</div>
-          <div class="cat-name">CCTV Systems</div>
+          <!-- ROTATE X: category name -->
+          <div class="cat-name fx-rotate" data-split="chars" data-stagger="28">CCTV Systems</div>
           <div class="cat-desc">4MP Smart Cameras · Night Vision · Mobile Monitoring · HD Recording</div>
           <div class="cat-arrow"><div class="cat-arrow-line"></div>View Systems</div>
         </div>
@@ -970,7 +1009,7 @@ footer { background:var(--deep); border-top:1px solid var(--border); padding:80p
         <div class="cat-top-badge">02 / AUDIO</div>
         <div class="cat-info">
           <div class="cat-icon-wrap">🎵</div>
-          <div class="cat-name">Audio Systems</div>
+          <div class="cat-name fx-rotate" data-split="chars" data-stagger="28">Audio Systems</div>
           <div class="cat-desc">Amplifiers Class AB/D · Subwoofers · Home Theatre · Studio-Grade Sound</div>
           <div class="cat-arrow"><div class="cat-arrow-line"></div>Explore Audio</div>
         </div>
@@ -983,7 +1022,7 @@ footer { background:var(--deep); border-top:1px solid var(--border); padding:80p
         <div class="cat-top-badge">03 / COMPONENTS</div>
         <div class="cat-info">
           <div class="cat-icon-wrap">🔧</div>
-          <div class="cat-name">Electronic Components</div>
+          <div class="cat-name fx-rotate" data-split="chars" data-stagger="28">Components</div>
           <div class="cat-desc">Precision Parts · Repair Services · Custom Configurations · Warranty</div>
           <div class="cat-arrow"><div class="cat-arrow-line"></div>Browse Components</div>
         </div>
@@ -996,8 +1035,9 @@ footer { background:var(--deep); border-top:1px solid var(--border); padding:80p
 <section id="products">
   <div class="products-inner">
     <div class="section-header reveal">
-      <div class="section-label">Products & Systems</div>
-      <h2 class="section-title">Our <em style="font-style:italic;color:var(--wine)">Catalogue</em></h2>
+      <div class="section-label">Products &amp; Systems</div>
+      <!-- MASK REVEAL: section title -->
+      <h2 class="section-title fx-mask" data-split="words" data-stagger="60" style="margin-top:12px;">Our <em style="font-style:italic;color:var(--wine)">Catalogue</em></h2>
     </div>
     <div class="filter-bar reveal">
       <button class="filter-btn active" onclick="filterProducts('all',this)">All Products</button>
@@ -1014,31 +1054,33 @@ footer { background:var(--deep); border-top:1px solid var(--border); padding:80p
   <div class="features-inner">
     <div class="section-header reveal">
       <div class="section-label">Why Choose Us</div>
-      <h2 class="section-title">Crafted for <em style="font-style:italic;color:var(--wine)">Performance</em></h2>
+      <!-- MASK REVEAL: section title -->
+      <h2 class="section-title fx-mask" data-split="words" data-stagger="60" style="margin-top:12px;">Crafted for <em style="font-style:italic;color:var(--wine)">Performance</em></h2>
     </div>
     <div class="features-grid reveal">
       <div class="feature-card">
         <div class="feature-num">01</div>
         <span class="feature-icon">🎯</span>
-        <div class="feature-title">Expert Installation</div>
+        <!-- BLUR IN: feature title -->
+        <div class="feature-title fx-blur-in" data-split="words" data-stagger="50">Expert Installation</div>
         <div class="feature-desc">Every system is installed by trained technicians who understand your space. We don't just sell equipment — we engineer complete solutions tailored to your environment.</div>
       </div>
       <div class="feature-card">
         <div class="feature-num">02</div>
         <span class="feature-icon">🔒</span>
-        <div class="feature-title">Proven Security Systems</div>
+        <div class="feature-title fx-blur-in" data-split="words" data-stagger="50">Proven Security Systems</div>
         <div class="feature-desc">From residential homes to commercial complexes across Kollam, our CCTV systems provide round-the-clock vigilance with crystal-clear 4MP resolution and night vision.</div>
       </div>
       <div class="feature-card">
         <div class="feature-num">03</div>
         <span class="feature-icon">🎵</span>
-        <div class="feature-title">Audiophile-Grade Sound</div>
+        <div class="feature-title fx-blur-in" data-split="words" data-stagger="50">Audiophile-Grade Sound</div>
         <div class="feature-desc">We source and install amplifiers, subwoofers, and speaker systems that meet the exacting standards of both home cinema enthusiasts and professional audio environments.</div>
       </div>
       <div class="feature-card">
         <div class="feature-num">04</div>
         <span class="feature-icon">🤝</span>
-        <div class="feature-title">Local, Personal Service</div>
+        <div class="feature-title fx-blur-in" data-split="words" data-stagger="50">Local, Personal Service</div>
         <div class="feature-desc">Being rooted in Kottarakkara means faster response, real accountability, and a relationship that extends beyond the sale. Order via WhatsApp — we respond promptly.</div>
       </div>
     </div>
@@ -1050,27 +1092,29 @@ footer { background:var(--deep); border-top:1px solid var(--border); padding:80p
   <div class="process-inner">
     <div class="section-header reveal" style="text-align:center;">
       <div class="section-label" style="justify-content:center;">How It Works</div>
-      <h2 class="section-title">From <em style="font-style:italic;color:var(--wine)">Query</em> to <strong>Installation</strong></h2>
+      <!-- MASK REVEAL: process title -->
+      <h2 class="section-title fx-mask" data-split="words" data-stagger="55" style="margin-top:12px;">From <em style="font-style:italic;color:var(--wine)">Query</em> to <strong>Installation</strong></h2>
     </div>
     <div class="process-steps reveal">
+      <!-- SLIDE LEFT: each process step title -->
       <div class="process-step">
         <div class="process-num">01</div>
-        <div class="process-title">Contact Us</div>
+        <div class="process-title fx-slide-left" data-split="words" data-stagger="60">Contact Us</div>
         <div class="process-desc">Reach out via WhatsApp or visit our store in Pulamon, Kottarakkara. Describe your space and requirements.</div>
       </div>
       <div class="process-step">
         <div class="process-num">02</div>
-        <div class="process-title">Site Assessment</div>
+        <div class="process-title fx-slide-left" data-split="words" data-stagger="60">Site Assessment</div>
         <div class="process-desc">Our technicians assess your location and recommend the ideal system configuration for maximum coverage and performance.</div>
       </div>
       <div class="process-step">
         <div class="process-num">03</div>
-        <div class="process-title">Professional Setup</div>
+        <div class="process-title fx-slide-left" data-split="words" data-stagger="60">Professional Setup</div>
         <div class="process-desc">Clean, efficient installation with careful cable management and system configuration. No mess, no fuss.</div>
       </div>
       <div class="process-step">
         <div class="process-num">04</div>
-        <div class="process-title">Ongoing Support</div>
+        <div class="process-title fx-slide-left" data-split="words" data-stagger="60">Ongoing Support</div>
         <div class="process-desc">24/7 post-installation support. We're always reachable via WhatsApp for troubleshooting, upgrades, or service.</div>
       </div>
     </div>
@@ -1083,9 +1127,11 @@ footer { background:var(--deep); border-top:1px solid var(--border); padding:80p
   <div class="wa-inner reveal">
     <div class="section-label" style="justify-content:center;">WhatsApp Commerce</div>
     <span class="wa-icon-big">💬</span>
-    <h2 class="wa-headline">Order Directly via<br><em>WhatsApp</em></h2>
-    <p class="wa-sub">No complicated checkout. Browse, add to cart, and we'll handle the rest via WhatsApp — with personalized advice and expert guidance on every order.</p>
-    <button class="wa-btn-big" onclick="openWhatsApp()">💬 Chat & Order Now</button>
+    <!-- MASK REVEAL: wa headline -->
+    <h2 class="wa-headline fx-mask" data-split="words" data-stagger="70">Order Directly via <em>WhatsApp</em></h2>
+    <!-- SCROLL PROGRESS: wa sub paragraph -->
+    <p class="wa-sub fx-scroll-progress" data-split="words" id="wa-scroll-para">No complicated checkout. Browse, add to cart, and we'll handle the rest via WhatsApp — with personalized advice and expert guidance on every order.</p>
+    <button class="wa-btn-big" onclick="openWhatsApp()">💬 Chat &amp; Order Now</button>
     <div class="wa-features">
       <div class="wa-feature"><div class="wa-feature-icon">⚡</div><div class="wa-feature-text">Instant Response</div></div>
       <div class="wa-feature"><div class="wa-feature-icon">🚚</div><div class="wa-feature-text">Local Delivery</div></div>
@@ -1142,7 +1188,7 @@ footer { background:var(--deep); border-top:1px solid var(--border); padding:80p
     </div>
     <div class="footer-bottom">
       <span class="footer-copy">© 2025 Parankamveettil Electronics. All rights reserved.</span>
-      <a href="https://wa.me/919447000000" target="_blank" class="footer-wa-link">💬 WhatsApp Us</a>
+      <a href="https://wa.me/91995523420" target="_blank" class="footer-wa-link">💬 WhatsApp Us</a>
     </div>
   </div>
 </footer>
@@ -1176,7 +1222,127 @@ footer { background:var(--deep); border-top:1px solid var(--border); padding:80p
 <div class="toast" id="toast"></div>
 
 <script>
-// ── PRODUCT DATA ──
+/* ══════════════════════════════════════
+   TEXT EFFECTS ENGINE
+══════════════════════════════════════ */
+
+/* — Split text into word/char spans — */
+function splitText(el, type) {
+  if (type === 'chars') {
+    const text = el.textContent;
+    el.innerHTML = '';
+    [...text].forEach(ch => {
+      const span = document.createElement('span');
+      span.className = 'split-char';
+      if (ch === ' ') {
+        span.innerHTML = '&nbsp;';
+        span.style.marginRight = '0.22em';
+        span.style.overflow = 'visible';
+      } else {
+        const inner = document.createElement('span');
+        inner.className = 'anim-inner';
+        inner.textContent = ch;
+        span.appendChild(inner);
+      }
+      el.appendChild(span);
+    });
+  } else if (type === 'words') {
+    const text = el.innerHTML; // preserve inner HTML (em, strong tags)
+    const parser = new DOMParser();
+    const doc = parser.parseFromString('<div>' + text + '</div>', 'text/html');
+    el.innerHTML = '';
+    // flatten to text nodes and elements
+    function processNode(node) {
+      if (node.nodeType === Node.TEXT_NODE) {
+        node.textContent.split(/(\s+)/).filter(Boolean).forEach(token => {
+          if (/^\s+$/.test(token)) return;
+          const span = document.createElement('span');
+          span.className = 'split-word';
+          const inner = document.createElement('span');
+          inner.className = 'anim-inner';
+          inner.textContent = token;
+          span.appendChild(inner);
+          el.appendChild(span);
+          el.appendChild(document.createTextNode(' '));
+        });
+      } else if (node.nodeType === Node.ELEMENT_NODE) {
+        // wrap the whole element as one word
+        const span = document.createElement('span');
+        span.className = 'split-word';
+        const inner = document.createElement('span');
+        inner.className = 'anim-inner';
+        inner.appendChild(node.cloneNode(true));
+        span.appendChild(inner);
+        el.appendChild(span);
+        el.appendChild(document.createTextNode(' '));
+      }
+    }
+    doc.querySelector('div').childNodes.forEach(n => processNode(n));
+  }
+}
+
+/* — Apply stagger transition delays — */
+function applyStagger(el, stagger) {
+  el.querySelectorAll('.anim-inner').forEach((u, i) => {
+    u.style.transitionDelay = (i * stagger) + 'ms';
+  });
+}
+
+/* — Viewport trigger observer — */
+function observeTrigger(el) {
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        el.classList.add('revealed');
+        io.unobserve(el);
+      }
+    });
+  }, { threshold: 0.12 });
+  io.observe(el);
+}
+
+/* — Scroll progress (word level) — */
+function initScrollProgressWords(el) {
+  const words = Array.from(el.querySelectorAll('.split-word'));
+  function update() {
+    const rect = el.getBoundingClientRect();
+    const vh = window.innerHeight;
+    const progress = 1 - (rect.bottom / (vh + rect.height));
+    const clamped = Math.max(0, Math.min(1, progress * 2.4));
+    const litCount = Math.floor(clamped * words.length);
+    words.forEach((w, i) => {
+      i < litCount ? w.classList.add('lit') : w.classList.remove('lit');
+    });
+  }
+  window.addEventListener('scroll', update, { passive: true });
+  update();
+}
+
+/* — Init all data-split elements — */
+function initTextEffects() {
+  document.querySelectorAll('[data-split]').forEach(el => {
+    const splitType = el.dataset.split;
+    const stagger = parseInt(el.dataset.stagger || '60');
+    const effect = el.dataset.effect;
+
+    // Skip if already initialised
+    if (el.dataset.txInit) return;
+    el.dataset.txInit = '1';
+
+    splitText(el, splitType);
+    applyStagger(el, stagger);
+
+    if (effect === 'scroll-progress') {
+      initScrollProgressWords(el);
+    } else {
+      observeTrigger(el);
+    }
+  });
+}
+
+/* ══════════════════════════════════════
+   PRODUCT DATA
+══════════════════════════════════════ */
 const PRODUCTS = [
   { id:1, category:'cctv', name:'4MP Smart WiFi Camera', emoji:'📷', gradClass:'cctv-grad', desc:'Ultra-clear 4MP resolution with intelligent motion detection, night vision, and seamless mobile monitoring from anywhere.', price:3500, badge:'Bestseller', specs:{Resolution:'4MP',Connectivity:'WiFi/LAN',Vision:'Night Vision',Storage:'Cloud + SD'} },
   { id:2, category:'cctv', name:'8-Channel DVR Security Kit', emoji:'🎬', gradClass:'cctv-grad', desc:'Complete 8-channel security system with DVR recorder, suitable for homes and commercial spaces with 24/7 recording.', price:18500, badge:null, specs:{Channels:'8 Ch',Storage:'1TB HDD',Resolution:'HD 1080p',Remote:'Mobile App'} },
@@ -1193,7 +1359,6 @@ const PRODUCTS = [
 ];
 
 let cart = [];
-let activeFilter = 'all';
 
 function catLabel(cat) {
   return { cctv:'CCTV System', audio:'Audio System', components:'Components & Services' }[cat] || cat;
@@ -1224,17 +1389,17 @@ function renderProducts(filter='all') {
     </div>
   `).join('');
   observeReveal();
+  initTextEffects();
 }
 
 function filterProducts(filter, btn) {
-  activeFilter = filter;
   document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
   if(btn) btn.classList.add('active');
   renderProducts(filter);
   document.getElementById('products').scrollIntoView({ behavior:'smooth' });
 }
 
-// ── CART ──
+/* ══ CART ══ */
 function addToCart(id) {
   const p = PRODUCTS.find(x=>x.id===id);
   const ex = cart.find(i=>i.id===id);
@@ -1291,8 +1456,7 @@ function toggleCart() {
   document.body.style.overflow=open?'hidden':'';
 }
 
-const WA_NUMBER='919447000000';
-
+const WA_NUMBER='91995523420';
 function checkout() {
   if(cart.length===0) return;
   const lines = cart.map((i,idx)=>`${idx+1}. ${i.qty}× ${i.name} — ₹${(i.price*i.qty).toLocaleString('en-IN')}`).join('\n');
@@ -1301,11 +1465,10 @@ function checkout() {
   window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
 }
 function openWhatsApp() {
-  const msg=`Hello Parankamveettil Electronics! I'd like to enquire about your products and services. 😊`;
-  window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
+  window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent('Hello Parankamveettil Electronics! I\'d like to enquire about your products and services. 😊')}`, '_blank');
 }
 
-// ── MODAL ──
+/* ══ MODAL ══ */
 function openModal(id) {
   const p = PRODUCTS.find(x=>x.id===id);
   document.getElementById('modalBody').innerHTML = `
@@ -1330,7 +1493,7 @@ function closeModal() {
 }
 document.getElementById('productModal').addEventListener('click', function(e){ if(e.target===this) closeModal(); });
 
-// ── MOBILE NAV ──
+/* ══ MOBILE NAV ══ */
 function openMobileNav() {
   document.getElementById('mobileNav').classList.add('open');
   document.getElementById('overlay').classList.add('show');
@@ -1342,14 +1505,14 @@ function closeMobileNav() {
   document.body.style.overflow='';
 }
 
-// ── TOAST ──
+/* ══ TOAST ══ */
 function showToast(msg) {
   const t=document.getElementById('toast');
   t.textContent=msg; t.classList.add('show');
   setTimeout(()=>t.classList.remove('show'), 2600);
 }
 
-// ── SCROLL REVEAL ──
+/* ══ SCROLL REVEAL (non-text elements) ══ */
 function observeReveal() {
   const els = document.querySelectorAll('.reveal:not(.visible)');
   const io = new IntersectionObserver((entries)=>{
@@ -1363,12 +1526,12 @@ function observeReveal() {
   els.forEach(el=>io.observe(el));
 }
 
-// ── NAV SCROLL ──
+/* ══ NAV SCROLL ══ */
 window.addEventListener('scroll', ()=>{
   document.getElementById('nav').classList.toggle('scrolled', window.scrollY>60);
 });
 
-// ── CURSOR ──
+/* ══ CURSOR ══ */
 const cursor = document.getElementById('cursor');
 const ring = document.getElementById('cursorRing');
 let mx=0,my=0,rx=0,ry=0;
@@ -1390,10 +1553,16 @@ if('ontouchstart' in window) {
   document.body.style.cursor='auto';
 }
 
-// ── INIT ──
+/* ══ INIT ══ */
+// Hero title mask reveal
+setTimeout(() => {
+  document.getElementById('heroTitle').classList.add('revealed');
+}, 350);
+
 renderProducts('all');
 updateCartUI();
 observeReveal();
+initTextEffects();
 </script>
 </body>
 </html>
