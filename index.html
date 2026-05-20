@@ -1190,12 +1190,169 @@ footer { background:var(--deep); border-top:1px solid var(--border); padding:80p
   .cat-deco-large,
   .cat-icon-wrap { display:none; }
 }
+
+
+/* ══════════════════════════════
+   LOADER
+══════════════════════════════ */
+
+#loader{
+  position:fixed;
+  inset:0;
+  z-index:999999;
+
+  background:
+    radial-gradient(
+      ellipse 70% 60% at 50% 40%,
+      rgba(252,59,0,.14) 0%,
+      transparent 65%
+    ),
+    linear-gradient(
+      160deg,
+      #000000 0%,
+      #0F0603 45%,
+      #000000 100%
+    );
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  transition:
+    opacity .7s cubic-bezier(.22,1,.36,1),
+    visibility .7s;
+}
+
+#loader.hide{
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+}
+
+.loader-content{
+  width:min(420px,85vw);
+  text-align:center;
+}
+
+.loader-brand{
+  display:flex;
+  align-items:baseline;
+  justify-content:center;
+  gap:12px;
+
+  margin-bottom:12px;
+}
+
+.loader-pv{
+  font-family:var(--font-display);
+  font-size:clamp(54px,8vw,88px);
+  font-weight:900;
+  line-height:1;
+
+  color:var(--wine);
+
+  text-shadow:
+    0 0 20px rgba(252,59,0,.25),
+    0 0 50px rgba(252,59,0,.15);
+
+  animation:pvPulse 2s ease-in-out infinite;
+}
+
+.loader-text{
+  font-family:var(--font-display);
+  font-size:clamp(18px,2vw,28px);
+  letter-spacing:.08em;
+  color:var(--sand);
+}
+
+.loader-tagline{
+  font-family:var(--font-mono);
+  font-size:10px;
+  letter-spacing:.22em;
+  text-transform:uppercase;
+
+  color:var(--sand-dim);
+
+  margin-bottom:32px;
+}
+
+.loader-bar{
+  width:100%;
+  height:3px;
+
+  background:rgba(255,255,255,.08);
+
+  overflow:hidden;
+  position:relative;
+}
+
+.loader-progress{
+  height:100%;
+  width:0%;
+
+  background:
+    linear-gradient(
+      90deg,
+      var(--wine),
+      var(--wine-mid)
+    );
+
+  box-shadow:
+    0 0 20px rgba(252,59,0,.4);
+
+  animation:loaderFill 1.8s cubic-bezier(.22,1,.36,1) forwards;
+}
+
+@keyframes loaderFill{
+  from{width:0%;}
+  to{width:100%;}
+}
+
+
+
+.loader-counter{
+  font-family:var(--font-mono);
+  color:var(--wine-mid);
+  font-size:12px;
+  letter-spacing:.15em;
+  margin-bottom:14px;
+}
+
+
 </style>
 </head>
 <body>
 
+
+
+
+
 <div class="cursor" id="cursor"></div>
 <div class="cursor-ring" id="cursorRing"></div>
+
+
+
+
+<!-- LOADER -->
+<div id="loader">
+  <div class="loader-content">
+
+    <div class="loader-brand">
+      <span class="loader-pv">PV  ELECTRONICS  </span>
+      <span class="loader-text"></span>
+    </div>
+
+    <div class="loader-tagline">
+     
+    </div>
+
+    <div class="loader-counter" id="loaderCounter">0%</div>
+    <div class="loader-bar">
+      <div class="loader-progress"></div>
+    </div>
+
+  </div>
+</div>
 
 <!-- ══ NAV ══ -->
 <nav id="nav">
@@ -2694,6 +2851,38 @@ if('ontouchstart' in window) {
   ring.style.display='none';
   document.body.style.cursor='auto';
 }
+
+/* ══════════════════════════════
+   LOADER
+══════════════════════════════ */
+
+document.addEventListener('DOMContentLoaded', () => {
+
+  const loader = document.getElementById('loader');
+
+  setTimeout(() => {
+    loader.classList.add('hide');
+
+    setTimeout(() => {
+      loader.remove();
+    }, 700);
+
+  }, 1800);
+
+});
+let percent = 0;
+const counter = document.getElementById('loaderCounter');
+
+const timer = setInterval(() => {
+  percent += 4;
+
+  if(percent > 100){
+    percent = 100;
+    clearInterval(timer);
+  }
+
+  counter.textContent = percent + '%';
+}, 72);
 
 /* ══ INIT ══ */
 // Hero title mask reveal
