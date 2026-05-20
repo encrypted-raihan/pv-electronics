@@ -432,64 +432,423 @@ nav.scrolled {
 /* ══════════════════════════════
    CATEGORIES
 ══════════════════════════════ */
-#categories { padding:120px 52px; background:var(--deep); }
-.cats-inner { max-width:1400px; margin:0 auto; }
-.section-title { font-family:var(--font-display); font-size:clamp(34px, 4.5vw, 60px); font-weight:400; margin-top:12px; line-height:1.1; }
 
-.cats-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:3px; margin-top:56px; }
-.cat-card {
-  position:relative; aspect-ratio:3/4.2; overflow:hidden; cursor:pointer;
+#categories{
+  padding:120px 52px;
+  background:var(--deep);
 }
-.cat-bg-layer {
-  position:absolute; inset:0; transition:transform 0.7s var(--ease-out);
-}
-.cat-card:hover .cat-bg-layer { transform:scale(1.06); }
-.cat-cctv .cat-bg-layer { background:linear-gradient(160deg, #0B0502 0%, #1B0904 100%); }
-.cat-audio .cat-bg-layer { background:linear-gradient(160deg, #0F0603 0%, #1A0A04 100%); }
-.cat-comp .cat-bg-layer { background:linear-gradient(160deg, #0E0503 0%, #140702 100%); }
 
-.cat-pattern {
-  position:absolute; inset:0; opacity:0.06;
-  background-image:repeating-linear-gradient(45deg, var(--sand) 0, var(--sand) 1px, transparent 0, transparent 50%);
+.cats-inner{
+  max-width:1400px;
+  margin:0 auto;
+}
+
+.section-title{
+  font-family:var(--font-display);
+  font-size:clamp(34px, 4.5vw, 60px);
+  font-weight:400;
+  margin-top:12px;
+  line-height:1.1;
+}
+
+/* GRID */
+
+.cats-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:3px;
+  margin-top:56px;
+}
+
+/* CARD */
+
+.cat-card{
+  position:relative;
+  aspect-ratio:3/4.2;
+  overflow:hidden;
+  cursor:pointer;
+  isolation:isolate;
+}
+
+.cat-bg-layer{
+  position:absolute;
+  inset:0;
+  transition:transform 0.7s var(--ease-out);
+}
+
+.cat-card:hover .cat-bg-layer{
+  transform:scale(1.06);
+}
+
+/* CATEGORY COLORS */
+
+/* CCTV SECURITY */
+.cat-cctv .cat-bg-layer{
+  background:
+    radial-gradient(
+      circle at top right,
+      rgba(252,59,0,.18) 0%,
+      transparent 45%
+    ),
+    linear-gradient(
+      160deg,
+      #090202 0%,
+      #180505 45%,
+      #2B0909 100%
+    );
+}
+
+/* AUDIO SYSTEMS */
+.cat-audio .cat-bg-layer{
+  background:
+    radial-gradient(
+      circle at top right,
+      rgba(168,85,247,.20) 0%,
+      transparent 45%
+    ),
+    linear-gradient(
+      160deg,
+      #08030C 0%,
+      #16081E 50%,
+      #2A0E3D 100%
+    );
+}
+
+/* ELECTRONIC COMPONENTS */
+.cat-comp .cat-bg-layer{
+  background:
+    radial-gradient(
+      circle at top right,
+      rgba(255,153,0,.18) 0%,
+      transparent 45%
+    ),
+    linear-gradient(
+      160deg,
+      #0D0602 0%,
+      #1E0E03 50%,
+      #382000 100%
+    );
+}
+
+/* APPLIANCES */
+.cat-appliances .cat-bg-layer{
+  background:
+    radial-gradient(
+      circle at top right,
+      rgba(59,130,246,.18) 0%,
+      transparent 45%
+    ),
+    linear-gradient(
+      160deg,
+      #071019 0%,
+      #10253A 50%,
+      #1E4B7A 100%
+    );
+}
+
+
+/* PATTERN */
+
+.cat-pattern{
+  position:absolute;
+  inset:0;
+  opacity:0.06;
+
+  background-image:
+    repeating-linear-gradient(
+      45deg,
+      var(--sand) 0,
+      var(--sand) 1px,
+      transparent 0,
+      transparent 50%
+    );
+
   background-size:16px 16px;
   transition:opacity 0.4s;
 }
-.cat-card:hover .cat-pattern { opacity:0.1; }
 
-.cat-deco-large {
-  position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
-  font-size:140px; opacity:0.07;
-  transition:opacity 0.4s, transform 0.6s var(--ease-out);
+.cat-card:hover .cat-pattern{
+  opacity:0.1;
 }
-.cat-card:hover .cat-deco-large { opacity:0.12; transform:scale(1.08) rotate(-4deg); }
 
-.cat-overlay-grad {
-  position:absolute; inset:0;
-  background:linear-gradient(to top, rgba(14,6,8,0.97) 0%, rgba(14,6,8,0.4) 55%, transparent 100%);
+/* BIG DECORATION */
+
+.cat-deco-large{
+  position:absolute;
+  inset:0;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  font-size:140px;
+  opacity:0.07;
+
+  transition:
+    opacity 0.4s,
+    transform 0.6s var(--ease-out);
 }
-.cat-top-badge {
-  position:absolute; top:20px; left:20px;
-  font-family:var(--font-mono); font-size:9px; letter-spacing:0.2em; color:var(--wine-mid);
-  border:1px solid var(--border-wine); padding:4px 10px; text-transform:uppercase;
+
+.cat-card:hover .cat-deco-large{
+  opacity:0.12;
+  transform:scale(1.08) rotate(-4deg);
 }
-.cat-info { position:absolute; bottom:0; left:0; right:0; padding:32px 28px; }
-.cat-icon-wrap {
-  width:48px; height:48px; border-radius:50%; background:var(--wine-light); border:1px solid var(--border-wine);
-  display:flex; align-items:center; justify-content:center; font-size:22px; margin-bottom:16px;
+
+/* OVERLAY */
+
+.cat-overlay-grad{
+  position:absolute;
+  inset:0;
+
+  background:
+    linear-gradient(
+      to top,
+      rgba(14,6,8,0.97) 0%,
+      rgba(14,6,8,0.45) 55%,
+      transparent 100%
+    );
+}
+
+/* BADGE */
+
+.cat-top-badge{
+  position:absolute;
+  top:20px;
+  left:20px;
+
+  font-family:var(--font-mono);
+  font-size:9px;
+  letter-spacing:0.2em;
+  color:var(--wine-mid);
+
+  border:1px solid var(--border-wine);
+
+  padding:4px 10px;
+
+  text-transform:uppercase;
+}
+
+/* INFO */
+
+.cat-info{
+  position:absolute;
+  bottom:0;
+  left:0;
+  right:0;
+
+  padding:32px 28px;
+}
+
+/* ICON */
+
+.cat-icon-wrap{
+  width:48px;
+  height:48px;
+
+  border-radius:50%;
+
+  background:var(--wine-light);
+  border:1px solid var(--border-wine);
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  font-size:22px;
+  margin-bottom:16px;
+
   transition:background 0.3s;
 }
-.cat-card:hover .cat-icon-wrap { background:var(--wine); }
-/* Cat names use fx-rotate, applied per card */
-.cat-name { font-family:var(--font-display); font-size:26px; font-weight:700; margin-bottom:8px; color:var(--sand); }
-.cat-desc { font-size:13px; color:var(--sand-dim); line-height:1.6; margin-bottom:20px; }
-.cat-arrow {
-  font-family:var(--font-mono); font-size:10px; letter-spacing:0.18em; color:var(--wine-mid);
-  text-transform:uppercase; display:flex; align-items:center; gap:8px;
-  opacity:0; transform:translateY(8px); transition:all 0.35s 0.05s;
+
+.cat-card:hover .cat-icon-wrap{
+  background:var(--wine);
 }
-.cat-card:hover .cat-arrow { opacity:1; transform:translateY(0); color:var(--wine); }
-.cat-arrow-line { width:24px; height:1px; background:currentColor; transition:width 0.3s; }
-.cat-card:hover .cat-arrow-line { width:40px; }
+
+/* APPLIANCES SPECIAL */
+
+.cat-appliances .cat-top-badge{
+  color:#9dc7ff;
+  border-color:rgba(157,199,255,.25);
+}
+
+.cat-appliances .cat-icon-wrap{
+  background:rgba(157,199,255,.12);
+  border:1px solid rgba(157,199,255,.2);
+}
+
+.cat-appliances:hover .cat-icon-wrap{
+  background:rgba(157,199,255,.22);
+}
+
+/* TEXT */
+
+.cat-name{
+  font-family:var(--font-display);
+  font-size:26px;
+  font-weight:700;
+  line-height:1.08;
+
+  margin-bottom:8px;
+  color:var(--sand);
+}
+
+.cat-desc{
+  font-size:13px;
+  color:var(--sand-dim);
+  line-height:1.6;
+
+  margin-bottom:20px;
+}
+
+/* ARROW */
+
+.cat-arrow{
+  font-family:var(--font-mono);
+  font-size:10px;
+  letter-spacing:0.18em;
+  color:var(--wine-mid);
+
+  text-transform:uppercase;
+
+  display:flex;
+  align-items:center;
+  gap:8px;
+
+  opacity:0;
+  transform:translateY(8px);
+
+  transition:all 0.35s 0.05s;
+}
+
+.cat-card:hover .cat-arrow{
+  opacity:1;
+  transform:translateY(0);
+  color:var(--wine);
+}
+
+.cat-arrow-line{
+  width:24px;
+  height:1px;
+
+  background:currentColor;
+
+  transition:width 0.3s;
+}
+
+.cat-card:hover .cat-arrow-line{
+  width:40px;
+}
+
+/* ══════════════════════════════
+   RESPONSIVE
+══════════════════════════════ */
+
+@media (max-width:1200px){
+
+  .cats-grid{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+}
+
+@media (max-width:900px){
+
+  #categories{
+    padding:100px 24px;
+  }
+
+  .cats-grid{
+    grid-template-columns:1fr;
+    gap:12px;
+  }
+
+  .cat-card{
+    aspect-ratio:auto;
+    min-height:180px;
+  }
+
+  .cat-info{
+    padding:22px 20px;
+  }
+
+  .cat-top-badge{
+    top:14px;
+    left:14px;
+
+    font-size:8px;
+    padding:4px 8px;
+
+    letter-spacing:0.14em;
+  }
+
+  .cat-name{
+    font-size:22px;
+    line-height:1.08;
+
+    margin-bottom:6px;
+
+    max-width:92%;
+  }
+
+  .cat-desc{
+    font-size:12px;
+    line-height:1.5;
+
+    margin-bottom:14px;
+
+    max-width:95%;
+  }
+
+  .cat-arrow{
+    font-size:9px;
+    letter-spacing:0.14em;
+  }
+
+  .cat-deco-large{
+    font-size:96px;
+  }
+
+}
+
+@media (max-width:560px){
+
+  #categories{
+    padding:80px 20px;
+  }
+
+  .cat-card{
+    min-height:160px;
+  }
+
+  .cat-info{
+    padding:18px 18px;
+  }
+
+  .cat-name{
+    font-size:20px;
+    line-height:1.05;
+  }
+
+  .cat-desc{
+    font-size:11.5px;
+    line-height:1.45;
+  }
+
+  .cat-top-badge{
+    font-size:7px;
+    padding:3px 7px;
+  }
+
+  .cat-arrow{
+    display:none;
+  }
+
+  .cat-deco-large,
+  .cat-icon-wrap{
+    display:none;
+  }
+
+}
 
 /* ══════════════════════════════
    PRODUCTS
@@ -512,9 +871,26 @@ nav.scrolled {
 }
 .product-card:hover { border-color:var(--border-wine); transform:translateY(-5px); box-shadow:0 24px 60px rgba(252,59,0,0.2); }
 
-.product-img {
-  width:100%; aspect-ratio:16/10; display:flex; align-items:center; justify-content:center;
-  position:relative; overflow:hidden;
+.product-img{
+  position:relative;
+
+  width:100%;
+  aspect-ratio:4/3;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  overflow:hidden;
+
+  padding:20px;
+
+  background:
+    radial-gradient(
+      circle at top,
+      rgba(252,59,0,.12),
+      transparent 70%
+    );
 }
 .product-img-bg { position:absolute; inset:0; transition:transform 0.6s var(--ease-out); }
 .product-card:hover .product-img-bg { transform:scale(1.06); }
@@ -549,6 +925,48 @@ nav.scrolled {
 }
 .add-cart-btn:hover { background:var(--wine); border-color:var(--wine); color:var(--sand); }
 .add-cart-btn.added { background:#15803d; border-color:#15803d; color:#fff; }
+
+
+
+.cart-item-icon img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+}
+
+
+.modal-product-image{
+  width:80%;
+  height:80%;
+  object-fit:contain;
+}
+
+
+
+.product-photo{
+  width:100%;
+  height:100%;
+
+  object-fit:contain;
+
+  position:relative;
+  z-index:2;
+
+  transition:
+    transform .45s var(--ease-out),
+    filter .45s ease;
+
+  filter:
+    drop-shadow(0 12px 30px rgba(0,0,0,.35));
+}
+
+.product-card:hover .product-photo{
+  transform:scale(1.05);
+}
+
+.product-card:hover .product-photo{
+  transform:scale(1.06);
+}
 
 /* ══════════════════════════════
    FEATURES / WHY US
@@ -986,8 +1404,11 @@ footer { background:var(--deep); border-top:1px solid var(--border); padding:80p
     <div class="section-header reveal">
       <div class="section-label">Our Expertise</div>
       <!-- MASK REVEAL: section title -->
-      <h2 class="section-title fx-mask" data-split="words" data-stagger="60" style="margin-top:12px;">Three Pillars of <em style="font-style:italic;color:var(--wine)">Excellence</em></h2>
+      <h2 class="section-title fx-mask" data-split="words" data-stagger="60" style="margin-top:12px;">
+        Complete Technology <em style="font-style:italic;color:var(--wine)">Solutions</em>
+      </h2>
     </div>
+
     <div class="cats-grid reveal">
       <div class="cat-card cat-cctv" onclick="filterProducts('cctv')">
         <div class="cat-bg-layer"></div>
@@ -999,10 +1420,11 @@ footer { background:var(--deep); border-top:1px solid var(--border); padding:80p
           <div class="cat-icon-wrap">🎥</div>
           <!-- ROTATE X: category name -->
           <div class="cat-name fx-rotate" data-split="chars" data-stagger="28">CCTV Security Systems</div>
-          <div class="cat-desc">4MP Smart Cameras · Night Vision · Mobile Monitoring · HD Recording</div>
+          <div class="cat-desc">WiFi Cameras · 4G SIM Cameras · DVR/NVR Setup · Security Monitoring</div>
           <div class="cat-arrow"><div class="cat-arrow-line"></div>View Systems</div>
         </div>
       </div>
+
       <div class="cat-card cat-audio" onclick="filterProducts('audio')">
         <div class="cat-bg-layer"></div>
         <div class="cat-pattern"></div>
@@ -1012,10 +1434,11 @@ footer { background:var(--deep); border-top:1px solid var(--border); padding:80p
         <div class="cat-info">
           <div class="cat-icon-wrap">🎵</div>
           <div class="cat-name fx-rotate" data-split="chars" data-stagger="28">Audio Systems</div>
-          <div class="cat-desc">Amplifiers Class AB/D · Subwoofers · Home Theatre · Studio-Grade Sound</div>
+          <div class="cat-desc">Amplifiers · Speakers · Home Theatre · Sound Bars · Microphones</div>
           <div class="cat-arrow"><div class="cat-arrow-line"></div>Explore Audio</div>
         </div>
       </div>
+
       <div class="cat-card cat-comp" onclick="filterProducts('components')">
         <div class="cat-bg-layer"></div>
         <div class="cat-pattern"></div>
@@ -1024,29 +1447,56 @@ footer { background:var(--deep); border-top:1px solid var(--border); padding:80p
         <div class="cat-top-badge">03 / COMPONENTS</div>
         <div class="cat-info">
           <div class="cat-icon-wrap">🔧</div>
-          <div class="cat-name fx-rotate" data-split="chars" data-stagger="28">Components</div>
-          <div class="cat-desc">Precision Parts · Repair Services · Custom Configurations · Warranty</div>
+          <div class="cat-name fx-rotate" data-split="chars" data-stagger="28">Electrical & Electronic Components</div>
+          <div class="cat-desc">Switches · Cables · SMPS · Connectors · LED Lighting · Remotes</div>
           <div class="cat-arrow"><div class="cat-arrow-line"></div>Browse Components</div>
+        </div>
+      </div>
+
+      <div class="cat-card cat-appliances" onclick="filterProducts('appliances')">
+        <div class="cat-bg-layer"></div>
+        <div class="cat-pattern"></div>
+        <div class="cat-deco-large">🏠</div>
+        <div class="cat-overlay-grad"></div>
+        <div class="cat-top-badge">04 / APPLIANCES</div>
+        <div class="cat-info">
+          <div class="cat-icon-wrap">⚙️</div>
+          <div class="cat-name fx-rotate" data-split="chars" data-stagger="28">Consumer Electronics</div>
+          <div class="cat-desc">Fans · Induction Cooktops · Emergency Lights · Gas Stoves · Daily-Use Appliances</div>
+          <div class="cat-arrow"><div class="cat-arrow-line"></div>Explore Appliances</div>
         </div>
       </div>
     </div>
   </div>
 </section>
 
+
 <!-- ══ PRODUCTS ══ -->
 <section id="products">
   <div class="products-inner">
     <div class="section-header reveal">
-      <div class="section-label">Products &amp; Systems</div>
-      <!-- MASK REVEAL: section title -->
-      <h2 class="section-title fx-mask" data-split="words" data-stagger="60" style="margin-top:12px;">Our <em style="font-style:italic;color:var(--wine)">Catalogue</em></h2>
+      <div class="section-label">Products &amp; Solutions</div>
+      <h2 class="section-title fx-mask" data-split="words" data-stagger="60" style="margin-top:12px;">
+        Featured <em style="font-style:italic;color:var(--wine)">Catalogue</em>
+      </h2>
+      <p class="section-subtitle">
+        Explore a focused range of CCTV, audio, electrical, and appliance solutions designed for homes, shops, and small businesses.
+      </p>
+    
     </div>
+
     <div class="filter-bar reveal">
-      <button class="filter-btn active" onclick="filterProducts('all',this)">All Products</button>
-      <button class="filter-btn" onclick="filterProducts('cctv',this)">CCTV Security Systems</button>
-      <button class="filter-btn" onclick="filterProducts('audio',this)">Audio Systems</button>
+      <button class="filter-btn active" onclick="filterProducts('all',this)">All</button>
+      <button class="filter-btn" onclick="filterProducts('cctv',this)">CCTV</button>
+      <button class="filter-btn" onclick="filterProducts('audio',this)">Audio</button>
       <button class="filter-btn" onclick="filterProducts('components',this)">Components</button>
+      <button class="filter-btn" onclick="filterProducts('appliances',this)">Appliances</button>
     </div>
+
+    <div class="products-toolbar reveal">
+      <div class="products-note"></div>
+    </div>
+
     <div class="products-grid" id="productsGrid"></div>
   </div>
 </section>
@@ -1346,18 +1796,652 @@ function initTextEffects() {
    PRODUCT DATA
 ══════════════════════════════════════ */
 const PRODUCTS = [
-  { id:1, category:'cctv', name:'4MP Smart WiFi Camera', emoji:'📷', gradClass:'cctv-grad', desc:'Ultra-clear 4MP resolution with intelligent motion detection, night vision, and seamless mobile monitoring from anywhere.', price:3500, badge:'Bestseller', specs:{Resolution:'4MP',Connectivity:'WiFi/LAN',Vision:'Night Vision',Storage:'Cloud + SD'} },
-  { id:2, category:'cctv', name:'8-Channel DVR Security Kit', emoji:'🎬', gradClass:'cctv-grad', desc:'Complete 8-channel security system with DVR recorder, suitable for homes and commercial spaces with 24/7 recording.', price:18500, badge:null, specs:{Channels:'8 Ch',Storage:'1TB HDD',Resolution:'HD 1080p',Remote:'Mobile App'} },
-  { id:3, category:'cctv', name:'PTZ Outdoor Camera', emoji:'🔭', gradClass:'cctv-grad', desc:'Pan-Tilt-Zoom outdoor camera with 360° coverage, weather-resistant housing, and AI-powered tracking.', price:7800, badge:'New', specs:{Pan:'360°',Zoom:'4x Optical',Rating:'IP66',Vision:'40m IR'} },
-  { id:4, category:'audio', name:'Class D Amplifier 200W', emoji:'🔊', gradClass:'audio-grad', desc:'High-efficiency Class D amplifier delivering crystal-clear 200W output with ultra-low distortion for home and professional use.', price:12000, badge:'Premium', specs:{Power:'200W RMS',Class:'Class D',THD:'<0.01%',Inputs:'RCA / XLR'} },
-  { id:5, category:'audio', name:'Home Theatre Subwoofer 12"', emoji:'🎵', gradClass:'audio-grad', desc:'Deep, room-filling bass with our 12-inch subwoofer — engineered for immersive home cinema and audiophile listening.', price:8500, badge:null, specs:{Size:'12 inch',Freq:'20–200 Hz',Power:'150W',Cabinet:'Bass Reflex'} },
-  { id:6, category:'audio', name:'Class AB Stereo Amplifier', emoji:'🎛️', gradClass:'audio-grad', desc:'Warm, musical Class AB amplifier with dual-channel output, perfect for high-fidelity stereo setups and audiophile systems.', price:9200, badge:null, specs:{Power:'2×80W',Class:'Class AB',SNR:'>95dB',Channels:'Stereo'} },
-  { id:7, category:'audio', name:'Ceiling Speaker Pair (6.5")', emoji:'🔉', gradClass:'audio-grad', desc:'Flush-mounted ceiling speakers delivering rich, even sound distribution across rooms — ideal for home automation setups.', price:4200, badge:'New', specs:{Size:'6.5 inch',Power:'60W each',Freq:'60Hz–20kHz',Mount:'In-ceiling'} },
-  { id:8, category:'components', name:'Speaker Repair Service', emoji:'🔧', gradClass:'comp-grad', desc:'Professional speaker repair and reconditioning — voice coil replacement, cone repair, and complete restoration.', price:800, badge:null, specs:{Type:'All Brands',TAT:'2–3 days',Warranty:'3 Months',Rating:'★★★★★'} },
-  { id:9, category:'components', name:'CCTV Power Supply Unit', emoji:'⚡', gradClass:'comp-grad', desc:'Regulated 12V CCTV power supply with multi-output ports, surge protection and reliable 24/7 operation.', price:1200, badge:null, specs:{Voltage:'12V DC',Ports:'8 Output',Protection:'Surge',Current:'10A'} },
-  { id:10, category:'components', name:'Remote Control Replacement', emoji:'📡', gradClass:'comp-grad', desc:'Universal and brand-specific remote control replacements for all major electronics brands with programming support.', price:450, badge:null, specs:{Compat:'Universal',Brands:'All Major',Prog:'Included',Warranty:'1 Month'} },
-  { id:11, category:'cctv', name:'NVR 4-Channel IP Kit', emoji:'🖥️', gradClass:'cctv-grad', desc:'Network Video Recorder with 4 IP camera setup — plug-and-play, remote access, and smart event notifications.', price:14500, badge:null, specs:{Channels:'4 IP',Protocol:'PoE',Access:'Remote',HDD:'500GB'} },
-  { id:12, category:'audio', name:'Bluetooth Amplifier Module', emoji:'📻', gradClass:'audio-grad', desc:'Compact Bluetooth 5.0 amplifier module — add wireless audio to any speaker system with ease.', price:2800, badge:null, specs:{BT:'v5.0',Power:'2×50W',Range:'15m',Input:'BT / AUX'} },
+
+/* ==========================
+   CONSUMER ELECTRONICS & APPLIANCES
+========================== */
+
+{
+  id: 1,
+  category: "appliances",
+  name: "Ceiling Fans",
+  image: "assets/products/ceiling-fan.webp",
+  gradClass: "comp-grad",
+  desc: "Energy-efficient ceiling fans suitable for homes, offices, and commercial spaces.",
+  price: 1499,
+  badge: "Popular",
+  specs:{
+    Type:"Ceiling Fan",
+    Speed:"High Airflow",
+    Power:"Energy Saving",
+    Warranty:"Brand Warranty"
+  }
+},
+
+{
+  id: 2,
+  category: "appliances",
+  name: "Table & Wall Fans",
+  image: "assets/products/table-wall-fan.webp",
+  gradClass: "comp-grad",
+  desc: "Portable table fans and wall-mounted cooling solutions.",
+  price: 999,
+  badge:null,
+  specs:{
+    Type:"Portable",
+    Speeds:"Multiple",
+    Use:"Home & Office",
+    Warranty:"Available"
+  }
+},
+
+{
+  id: 3,
+  category: "appliances",
+  name: "Mixer Grinder",
+  image: "assets/products/mixer-grinder.webp",
+  gradClass: "comp-grad",
+  desc: "Powerful mixer grinders designed for daily kitchen use.",
+  price: 2499,
+  badge:null,
+  specs:{
+    Motor:"High Power",
+    Jars:"Multiple",
+    Use:"Kitchen",
+    Warranty:"Yes"
+  }
+},
+
+{
+  id: 4,
+  category: "appliances",
+  name: "Electric Iron Box",
+  image: "assets/products/iron-box.webp",
+  gradClass: "comp-grad",
+  desc: "Reliable dry and steam irons from trusted brands.",
+  price: 699,
+  badge:null,
+  specs:{
+    Type:"Dry/Steam",
+    Plate:"Non-Stick",
+    Power:"Fast Heating",
+    Warranty:"Yes"
+  }
+},
+
+{
+  id: 5,
+  category: "appliances",
+  name: "Gas Stove",
+  image: "assets/products/gas-stove.webp",
+  gradClass: "comp-grad",
+  desc: "Single and multi-burner gas stoves for modern kitchens.",
+  price: 1899,
+  badge:null,
+  specs:{
+    Burners:"1-4",
+    Material:"Steel",
+    Ignition:"Manual/Auto",
+    Warranty:"Available"
+  }
+},
+
+{
+  id: 6,
+  category: "appliances",
+  name: "Emergency Lights",
+  image: "assets/products/emergency-light.webp",
+  gradClass: "comp-grad",
+  desc: "Rechargeable emergency lights with long backup.",
+  price: 599,
+  badge:null,
+  specs:{
+    Battery:"Rechargeable",
+    Backup:"Long Runtime",
+    Brightness:"LED",
+    Use:"Emergency"
+  }
+},
+
+{
+  id: 7,
+  category: "appliances",
+  name: "Torch Lights",
+  image: "assets/products/torch-light.webp",
+  gradClass: "comp-grad",
+  desc: "High-brightness LED torch lights for indoor and outdoor use.",
+  price: 199,
+  badge:null,
+  specs:{
+    Type:"LED",
+    Range:"Long Distance",
+    Battery:"Rechargeable",
+    Use:"Outdoor"
+  }
+},
+
+{
+  id: 8,
+  category: "appliances",
+  name: "Extension Boards",
+  image: "assets/products/extension-board.webp",
+  gradClass: "comp-grad",
+  desc: "Heavy-duty extension boards with surge protection.",
+  price: 249,
+  badge:null,
+  specs:{
+    Ports:"Multiple",
+    Safety:"Protected",
+    Cable:"Heavy Duty",
+    Use:"Home & Office"
+  }
+},
+
+{
+  id: 9,
+  category: "appliances",
+  name: "Induction Cooktop",
+  image: "assets/products/induction-cooktop.webp",
+  gradClass: "comp-grad",
+  desc: "Fast and efficient induction cooking solutions.",
+  price: 1899,
+  badge:null,
+  specs:{
+    Controls:"Digital",
+    Heating:"Fast",
+    Safety:"Auto Cutoff",
+    Warranty:"Yes"
+  }
+},
+
+{
+  id: 10,
+  category: "appliances",
+  name: "Infrared Cooktop",
+  image: "assets/products/infrared-cooktop.webp",
+  gradClass: "comp-grad",
+  desc: "Infrared cooktops compatible with all cookware.",
+  price: 2499,
+  badge:"New",
+  specs:{
+    Heating:"Infrared",
+    Surface:"Glass",
+    Controls:"Touch",
+    Warranty:"Yes"
+  }
+},
+
+/* ==========================
+   ELECTRICAL & ELECTRONIC COMPONENTS
+========================== */
+
+{
+  id: 11,
+  category: "components",
+  name: "TV & AC Remotes",
+  image: "assets/products/remotes.webp",
+  gradClass: "comp-grad",
+  desc: "Original and universal TV and AC remote controls.",
+  price: 250,
+  badge:null,
+  specs:{
+    Compatibility:"Universal",
+    Brands:"Multiple",
+    Setup:"Easy",
+    Warranty:"Available"
+  }
+},
+
+{
+  id: 12,
+  category: "components",
+  name: "Audio Video Cables",
+  image: "assets/products/av-cables.webp",
+  gradClass: "comp-grad",
+  desc: "HDMI, AUX, RCA, optical and AV cables.",
+  price: 99,
+  badge:null,
+  specs:{
+    Types:"HDMI/AUX/RCA",
+    Quality:"Premium",
+    Length:"Various",
+    Use:"Audio & Video"
+  }
+},
+
+{
+  id: 13,
+  category: "components",
+  name: "Connectors & Adaptors",
+  image: "assets/products/connectors.webp",
+  gradClass: "comp-grad",
+  desc: "Audio, video, power and networking connectors.",
+  price: 49,
+  badge:null,
+  specs:{
+    Type:"Various",
+    Material:"Premium",
+    Use:"Repair & Installation",
+    Stock:"Large"
+  }
+},
+
+{
+  id: 14,
+  category: "components",
+  name: "LED Lighting",
+  image: "assets/products/led-lighting.webp",
+  gradClass: "comp-grad",
+  desc: "LED bulbs, tubes, panels and decorative lighting.",
+  price: 79,
+  badge:"Popular",
+  specs:{
+    Type:"LED",
+    Brightness:"High",
+    Energy:"Saving",
+    Warranty:"Available"
+  }
+},
+
+{
+  id: 15,
+  category: "components",
+  name: "Electrical Switches",
+  image: "assets/products/switches.webp",
+  gradClass: "comp-grad",
+  desc: "Modular switches and electrical accessories.",
+  price: 49,
+  badge:null,
+  specs:{
+    Style:"Modular",
+    Safety:"Certified",
+    Quality:"Premium",
+    Use:"Home & Office"
+  }
+},
+
+{
+  id: 16,
+  category: "components",
+  name: "Electronic Components",
+  image: "assets/products/electronic-components.webp",
+  gradClass: "comp-grad",
+  desc: "Resistors, capacitors, ICs, relays and electronic parts.",
+  price: 20,
+  badge:null,
+  specs:{
+    Category:"Electronics",
+    Stock:"Large",
+    Use:"Repair",
+    Quality:"Tested"
+  }
+},
+
+{
+  id: 17,
+  category: "components",
+  name: "AC-DC SMPS",
+  image: "assets/products/smps.webp",
+  gradClass: "comp-grad",
+  desc: "Reliable switching power supplies for electronics and CCTV systems.",
+  price: 299,
+  badge:null,
+  specs:{
+    Output:"Various",
+    Efficiency:"High",
+    Protection:"Built-In",
+    Use:"Electronics"
+  }
+},
+
+{
+  id: 18,
+  category: "components",
+  name: "Electrical Cables & Wires",
+  image: "assets/products/cables.webp",
+  gradClass: "comp-grad",
+  desc: "High-quality electrical wires and cables.",
+  price: 25,
+  badge:null,
+  specs:{
+    Material:"Copper",
+    Safety:"Certified",
+    Gauge:"Various",
+    Use:"Electrical"
+  }
+},
+
+/* ==========================
+   AUDIO SYSTEMS
+========================== */
+
+{
+  id: 19,
+  category: "audio",
+  name: "Home Audio Amplifiers",
+  image: "assets/products/home-amplifier.webp",
+  gradClass: "audio-grad",
+  desc: "Powerful amplifiers for home audio and PA systems.",
+  price: 2500,
+  badge:"Popular",
+  specs:{
+    Power:"High Output",
+    Inputs:"Multiple",
+    Audio:"Hi-Fi",
+    Use:"Home Audio"
+  }
+},
+
+{
+  id: 20,
+  category: "audio",
+  name: "Speakers & Woofers",
+  image: "assets/products/speakers.webp",
+  gradClass: "audio-grad",
+  desc: "Wide range of speakers, woofers and tweeters.",
+  price: 799,
+  badge:null,
+  specs:{
+    Size:"Various",
+    Sound:"Clear",
+    Quality:"Premium",
+    Use:"Audio Systems"
+  }
+},
+
+{
+  id: 21,
+  category: "audio",
+  name: "Subwoofers",
+  image: "assets/products/subwoofer.webp",
+  gradClass: "audio-grad",
+  desc: "Deep bass subwoofers for immersive sound.",
+  price: 1499,
+  badge:null,
+  specs:{
+    Bass:"Deep",
+    Size:"Various",
+    Power:"High",
+    Use:"Home & Car"
+  }
+},
+
+{
+  id: 22,
+  category: "audio",
+  name: "Car Audio Systems",
+  image: "assets/products/car-audio.webp",
+  gradClass: "audio-grad",
+  desc: "Car speakers, amplifiers and accessories.",
+  price: 2999,
+  badge:null,
+  specs:{
+    Type:"Automotive",
+    Audio:"Enhanced",
+    Installation:"Available",
+    Warranty:"Yes"
+  }
+},
+
+{
+  id: 23,
+  category: "audio",
+  name: "Class-D Amplifier Boards",
+  image: "assets/products/class-d-board.webp",
+  gradClass: "audio-grad",
+  desc: "Efficient amplifier boards for DIY audio projects.",
+  price: 699,
+  badge:null,
+  specs:{
+    Class:"D",
+    Efficiency:"High",
+    Power:"Various",
+    Use:"DIY Audio"
+  }
+},
+
+{
+  id: 24,
+  category: "audio",
+  name: "Class-AB Amplifier Boards",
+  image: "assets/products/class-ab-board.webp",
+  gradClass: "audio-grad",
+  desc: "Warm sounding Class AB amplifier modules.",
+  price: 899,
+  badge:null,
+  specs:{
+    Class:"AB",
+    Sound:"Hi-Fi",
+    Power:"Various",
+    Use:"Amplifiers"
+  }
+},
+
+{
+  id: 25,
+  category: "audio",
+  name: "Home Theatre Systems",
+  image: "assets/products/home-theatre.webp",
+  gradClass: "audio-grad",
+  desc: "Immersive surround sound home theatre systems.",
+  price: 3999,
+  badge:"Premium",
+  specs:{
+    Audio:"Surround",
+    Connectivity:"Bluetooth",
+    Use:"Entertainment",
+    Warranty:"Yes"
+  }
+},
+
+{
+  id: 26,
+  category: "audio",
+  name: "Sound Bars",
+  image: "assets/products/soundbar.webp",
+  gradClass: "audio-grad",
+  desc: "Compact soundbars with powerful audio performance.",
+  price: 2499,
+  badge:null,
+  specs:{
+    Audio:"Enhanced",
+    Connectivity:"Bluetooth",
+    Use:"TV Audio",
+    Warranty:"Yes"
+  }
+},
+
+{
+  id: 27,
+  category: "audio",
+  name: "Bluetooth Speakers",
+  image: "assets/products/bluetooth-speaker.webp",
+  gradClass: "audio-grad",
+  desc: "Portable wireless Bluetooth speakers.",
+  price: 599,
+  badge:null,
+  specs:{
+    Wireless:"Bluetooth",
+    Battery:"Rechargeable",
+    Audio:"Portable",
+    Use:"Indoor/Outdoor"
+  }
+},
+
+{
+  id: 28,
+  category: "audio",
+  name: "Trolley Speakers",
+  image: "assets/products/trolley-speaker.webp",
+  gradClass: "audio-grad",
+  desc: "Portable PA systems with microphones.",
+  price: 4999,
+  badge:null,
+  specs:{
+    Portable:"Yes",
+    Battery:"Built-In",
+    Mic:"Included",
+    Use:"Events"
+  }
+},
+
+{
+  id: 29,
+  category: "audio",
+  name: "Microphones",
+  image: "assets/products/microphone.webp",
+  gradClass: "audio-grad",
+  desc: "Professional wired and wireless microphones.",
+  price: 399,
+  badge:null,
+  specs:{
+    Type:"Wired/Wireless",
+    Audio:"Clear",
+    Quality:"Professional",
+    Use:"PA & Karaoke"
+  }
+},
+
+/* ==========================
+   CCTV SECURITY SYSTEMS
+========================== */
+
+{
+  id: 30,
+  category: "cctv",
+  name: "WiFi Smart Cameras",
+  image: "assets/products/wifi-camera.webp",
+  gradClass: "cctv-grad",
+  desc: "Mobile-controlled smart security cameras.",
+  price: 1499,
+  badge:"Popular",
+  specs:{
+    Connectivity:"WiFi",
+    Access:"Mobile App",
+    Vision:"Night Vision",
+    Resolution:"HD"
+  }
+},
+
+{
+  id: 31,
+  category: "cctv",
+  name: "4G SIM Cameras",
+  image: "assets/products/4g-camera.webp",
+  gradClass: "cctv-grad",
+  desc: "Remote surveillance without broadband connection.",
+  price: 3499,
+  badge:null,
+  specs:{
+    Network:"4G",
+    Access:"Remote",
+    Storage:"SD Card",
+    Vision:"Night Vision"
+  }
+},
+
+{
+  id: 32,
+  category: "cctv",
+  name: "Bullet CCTV Cameras",
+  image: "assets/products/bullet-camera.webp",
+  gradClass: "cctv-grad",
+  desc: "Outdoor bullet cameras with HD recording.",
+  price: 999,
+  badge:null,
+  specs:{
+    Type:"Bullet",
+    Resolution:"HD",
+    Vision:"IR",
+    Use:"Outdoor"
+  }
+},
+
+{
+  id: 33,
+  category: "cctv",
+  name: "Dome CCTV Cameras",
+  image: "assets/products/dome-camera.webp",
+  gradClass: "cctv-grad",
+  desc: "Indoor dome cameras with discreet design.",
+  price: 999,
+  badge:null,
+  specs:{
+    Type:"Dome",
+    Resolution:"HD",
+    Vision:"IR",
+    Use:"Indoor"
+  }
+},
+
+{
+  id: 34,
+  category: "cctv",
+  name: "DVR Surveillance Systems",
+  image: "assets/products/dvr-system.webp",
+  gradClass: "cctv-grad",
+  desc: "4, 8 and 16 channel CCTV DVR systems.",
+  price: 4500,
+  badge:null,
+  specs:{
+    Channels:"4/8/16",
+    Recording:"24x7",
+    Storage:"Expandable",
+    Access:"Remote"
+  }
+},
+
+{
+  id: 35,
+  category: "cctv",
+  name: "IP Network Cameras",
+  image: "assets/products/ip-camera.webp",
+  gradClass: "cctv-grad",
+  desc: "Advanced IP surveillance cameras.",
+  price: 1999,
+  badge:null,
+  specs:{
+    Network:"IP",
+    Resolution:"High",
+    Monitoring:"Remote",
+    Installation:"Professional"
+  }
+},
+
+{
+  id: 36,
+  category: "cctv",
+  name: "IP NVR Camera Systems",
+  image: "assets/products/nvr-system.webp",
+  gradClass: "cctv-grad",
+  desc: "Professional IP camera recording systems.",
+  price: 8500,
+  badge:"Premium",
+  specs:{
+    Recording:"NVR",
+    Cameras:"Multiple",
+    Storage:"Expandable",
+    Monitoring:"Remote"
+  }
+},
+
+{
+  id: 37,
+  category: "cctv",
+  name: "CCTV Storage Solutions",
+  image: "assets/products/cctv-storage.webp",
+  gradClass: "cctv-grad",
+  desc: "Surveillance-grade storage drives and accessories.",
+  price: 2499,
+  badge:null,
+  specs:{
+    Capacity:"1TB+",
+    Type:"Surveillance HDD",
+    Reliability:"24/7",
+    Use:"CCTV Systems"
+  }
+}
+
 ];
 
 let cart = [];
@@ -1366,34 +2450,82 @@ function catLabel(cat) {
   return { cctv:'CCTV Security System', audio:'Audio System', components:'Components & Services' }[cat] || cat;
 }
 
-function renderProducts(filter='all') {
+function renderProducts(filter = 'all') {
   const grid = document.getElementById('productsGrid');
-  const filtered = filter==='all' ? PRODUCTS : PRODUCTS.filter(p=>p.category===filter);
-  grid.innerHTML = filtered.map(p=>`
+
+  const filtered =
+    filter === 'all'
+      ? PRODUCTS
+      : PRODUCTS.filter(p => p.category === filter);
+
+  grid.innerHTML = filtered.map(p => `
     <div class="product-card reveal" onclick="openModal(${p.id})">
+
       <div class="product-img">
         <div class="product-img-bg ${p.gradClass}"></div>
-        <div class="product-emoji-wrap">${p.emoji}</div>
-        ${p.badge ? `<div class="product-badge">${p.badge}</div>` : ''}
+
+        <img
+          src="${p.image}"
+          alt="${p.name}"
+          class="product-photo"
+          loading="lazy"
+          onerror="this.src='assets/products/placeholder.webp'"
+        >
+
+        ${p.badge ? `
+          <div class="product-badge">
+            ${p.badge}
+          </div>
+        ` : ''}
       </div>
+
       <div class="product-body">
-        <div class="product-cat">${catLabel(p.category)}</div>
-        <div class="product-name">${p.name}</div>
-        <div class="product-desc">${p.desc.substring(0,82)}...</div>
+
+        <div class="product-cat">
+          ${catLabel(p.category)}
+        </div>
+
+        <div class="product-name">
+          ${p.name}
+        </div>
+
+        <div class="product-desc">
+          ${p.desc.length > 82
+            ? p.desc.substring(0, 82) + '...'
+            : p.desc}
+        </div>
+
         <div class="product-specs">
-          ${Object.entries(p.specs).slice(0,3).map(([k,v])=>`<span class="spec-tag">${v}</span>`).join('')}
+          ${Object.entries(p.specs)
+            .slice(0, 3)
+            .map(([k, v]) => `
+              <span class="spec-tag">${v}</span>
+            `)
+            .join('')}
         </div>
+
         <div class="product-footer">
-          <div class="product-price">₹${p.price.toLocaleString('en-IN')} <span>/unit</span></div>
-          <button class="add-cart-btn" onclick="event.stopPropagation(); addToCart(${p.id})">+ Add</button>
+          <div class="product-price">
+            ₹${p.price.toLocaleString('en-IN')}
+            <span>/unit</span>
+          </div>
+
+          <button
+            class="add-cart-btn"
+            onclick="event.stopPropagation(); addToCart(${p.id})"
+          >
+            + Add
+          </button>
         </div>
+
       </div>
+
     </div>
   `).join('');
+
   observeReveal();
   initTextEffects();
 }
-
 function filterProducts(filter, btn) {
   document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
   if(btn) btn.classList.add('active');
@@ -1408,7 +2540,7 @@ function addToCart(id) {
   if(ex) ex.qty++;
   else cart.push({...p, qty:1});
   updateCartUI();
-  showToast(`${p.emoji} ${p.name} added to cart`);
+  showToast(`${p.name} added to cart`);
 }
 function removeFromCart(id) {
   cart = cart.filter(i=>i.id!==id);
@@ -1435,7 +2567,9 @@ function updateCartUI() {
   } else {
     itemsEl.innerHTML = cart.map(i=>`
       <div class="cart-item">
-        <div class="cart-item-icon">${i.emoji}</div>
+        <div class="cart-item-icon">
+  <img src="${i.image}" alt="${i.name}">
+</div>
         <div class="cart-item-info">
           <div class="cart-item-name">${i.name}</div>
           <div class="cart-item-price">₹${i.price.toLocaleString('en-IN')}</div>
@@ -1474,7 +2608,13 @@ function openWhatsApp() {
 function openModal(id) {
   const p = PRODUCTS.find(x=>x.id===id);
   document.getElementById('modalBody').innerHTML = `
-    <div class="modal-img ${p.gradClass}">${p.emoji}</div>
+    <div class="modal-img ${p.gradClass}">
+  <img
+    src="${p.image}"
+    alt="${p.name}"
+    class="modal-product-image"
+  >
+</div>
     <div class="modal-info">
       <div class="modal-cat">${catLabel(p.category)}</div>
       <div class="modal-name">${p.name}</div>
