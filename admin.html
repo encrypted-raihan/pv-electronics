@@ -1,0 +1,1300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Parankamveettil Electronics — Admin Panel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --wine:#FC3B00;
+  --wine-mid:#FF7145;
+  --wine-glow:rgba(252,59,0,.25);
+  --sand:#fff;
+  --sand-dim:rgba(255,255,255,.7);
+  --black:#000;
+  --deep:#090403;
+  --panel:#120704;
+  --panel-2:#160905;
+  --border:rgba(255,255,255,.1);
+  --border-bright:rgba(255,255,255,.2);
+  --border-wine:rgba(252,59,0,.35);
+  --font-display:'Playfair Display',serif;
+  --font-body:'DM Sans',sans-serif;
+  --font-mono:'DM Mono',monospace;
+  --radius:2px;
+  --ease:cubic-bezier(.22,1,.36,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:
+  radial-gradient(ellipse 70% 50% at 50% 0%, rgba(252,59,0,.10) 0%, transparent 55%),
+  linear-gradient(160deg, #000 0%, #090403 45%, #000 100%);
+  color:var(--sand); font-family:var(--font-body); min-height:100vh;}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;opacity:.03;background-image:linear-gradient(rgba(255,255,255,.25) 1px, transparent 1px),linear-gradient(90deg, rgba(255,255,255,.25) 1px, transparent 1px);background-size:80px 80px;}
+a{color:inherit}
+.wrap{max-width:1500px;margin:0 auto;padding:28px 22px 40px;}
+.topbar{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;flex-wrap:wrap;padding:26px;border:1px solid var(--border);background:rgba(18,7,4,.88);backdrop-filter:blur(18px);border-radius:14px;box-shadow:0 24px 80px rgba(0,0,0,.35)}
+.eyebrow{font-family:var(--font-mono);font-size:10px;letter-spacing:.26em;text-transform:uppercase;color:var(--wine-mid);margin-bottom:10px}
+h1{font-family:var(--font-display);font-size:clamp(34px,4vw,56px);line-height:1;letter-spacing:-.02em;margin-bottom:10px}
+.lead{max-width:760px;color:var(--sand-dim);line-height:1.75;font-size:15px}
+.actions{display:flex;gap:10px;flex-wrap:wrap}
+.btn{appearance:none;border:none;cursor:pointer;text-decoration:none;padding:12px 18px;border-radius:var(--radius);font-family:var(--font-body);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;transition:transform .25s var(--ease), background .25s, border-color .25s, opacity .25s;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.btn:hover{transform:translateY(-2px)}
+.btn.primary{background:var(--wine);color:#fff;box-shadow:0 12px 40px var(--wine-glow)}
+.btn.ghost{background:transparent;color:var(--sand);border:1px solid var(--border-bright)}
+.btn.ghost:hover{border-color:var(--wine);background:rgba(252,59,0,.08)}
+.btn.danger{border-color:rgba(239,68,68,.35)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:14px 0}
+.stat{padding:18px 20px;border:1px solid var(--border);background:rgba(18,7,4,.65);border-radius:12px}
+.stat .k{font-family:var(--font-mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--sand-dim);margin-bottom:8px}
+.stat .v{font-family:var(--font-display);font-size:30px;font-weight:700;color:var(--wine)}
+.grid{display:grid;grid-template-columns:1.05fr .95fr;gap:14px}
+.panel{border:1px solid var(--border);background:rgba(18,7,4,.82);backdrop-filter:blur(18px);border-radius:14px;box-shadow:0 24px 80px rgba(0,0,0,.28);overflow:hidden}
+.panel-head{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:20px 20px 0}
+.panel h2{font-family:var(--font-display);font-size:28px;line-height:1}
+.panel-sub{color:var(--sand-dim);font-size:13px;line-height:1.7;margin-top:8px;max-width:720px}
+.form{padding:20px}
+.field-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.field{display:flex;flex-direction:column;gap:8px}
+.field.full{grid-column:1/-1}
+label{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--sand-dim);font-family:var(--font-mono)}
+input,select,textarea{width:100%;background:rgba(255,255,255,.03);border:1px solid var(--border);color:var(--sand);padding:13px 14px;border-radius:10px;font:inherit;outline:none;transition:border-color .2s, background .2s}
+input:focus,select:focus,textarea:focus{border-color:var(--wine);background:rgba(255,255,255,.05)}
+textarea{min-height:120px;resize:vertical;line-height:1.7}
+.helper{font-size:12px;color:var(--sand-dim);line-height:1.65}
+.image-row{display:grid;grid-template-columns:1fr 180px;gap:12px;align-items:start}
+.preview{width:100%;aspect-ratio:4/3;border:1px solid var(--border);border-radius:12px;background:linear-gradient(135deg, #0a0402, #1a0a04);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.preview img{width:100%;height:100%;object-fit:contain}
+.specs{display:flex;flex-direction:column;gap:10px}
+.spec-row{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:center}
+.small-btn{border:1px solid var(--border);background:transparent;color:var(--sand);border-radius:10px;padding:12px 14px;cursor:pointer;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.small-btn:hover{border-color:var(--wine);background:rgba(252,59,0,.08)}
+.small-btn.red{border-color:rgba(239,68,68,.3);color:#ffb4b4}
+.small-btn.red:hover{background:rgba(239,68,68,.1)}
+.footer-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.list-bar{display:flex;gap:10px;flex-wrap:wrap;padding:0 20px 20px;align-items:center}
+.search{flex:1;min-width:220px}
+.catalog{padding:0 20px 20px;max-height:calc(100vh - 330px);overflow:auto;display:grid;gap:10px}
+.item{display:grid;grid-template-columns:92px 1fr auto;gap:14px;align-items:center;padding:12px;border:1px solid var(--border);background:rgba(255,255,255,.02);border-radius:12px}
+.thumb{width:92px;height:92px;border-radius:10px;border:1px solid var(--border);overflow:hidden;background:rgba(255,255,255,.03);display:flex;align-items:center;justify-content:center}
+.thumb img{width:100%;height:100%;object-fit:contain}
+.meta{min-width:0}
+.name{font-family:var(--font-display);font-size:20px;font-weight:700;line-height:1.15;margin-bottom:4px}
+.sub{font-size:12px;color:var(--sand-dim);line-height:1.55;display:flex;flex-wrap:wrap;gap:8px}
+.badge{display:inline-flex;align-items:center;gap:6px;padding:3px 8px;border:1px solid var(--border);border-radius:999px;font-family:var(--font-mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--wine-mid)}
+.item-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.item-actions .small-btn{padding:10px 12px}
+.empty{padding:48px 20px;text-align:center;color:var(--sand-dim);line-height:1.75}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);opacity:0;pointer-events:none;background:var(--wine);color:#fff;padding:12px 18px;border-radius:10px;border:1px solid rgba(255,255,255,.15);font-size:13px;font-weight:700;transition:all .3s var(--ease);box-shadow:0 18px 60px rgba(0,0,0,.35)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.hidden{display:none !important}
+
+
+select{
+    background:#1a0b07;
+    color:#ffffff;
+}
+
+select option{
+    background:#1a0b07;
+    color:#ffffff;
+}
+
+
+@media (max-width: 1024px){
+  .grid{grid-template-columns:1fr}
+  .catalog{max-height:none}
+}
+@media (max-width: 720px){
+  .topbar{padding:20px}
+  .stats{grid-template-columns:1fr}
+  .field-grid,.image-row,.item{grid-template-columns:1fr}
+  .item-actions{justify-content:flex-start}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="topbar">
+    <div>
+      <div class="eyebrow">Local catalogue manager</div>
+      <h1>Admin Panel</h1>
+      <div class="lead">Add, edit, delete, and upload product photos. Everything saves in browser storage — no backend, no API, just static HTML doing the heavy lifting.</div>
+    </div>
+    <div class="actions">
+      <a class="btn ghost" href="index.html">← Back to site</a>
+      <button class="btn ghost" id="restoreBtn">Restore demo</button>
+      <button class="btn ghost danger" id="clearBtn">Clear all</button>
+    </div>
+  </header>
+
+  <section class="stats" id="stats">
+    <div class="stat"><div class="k">Products</div><div class="v" id="statCount">0</div></div>
+    <div class="stat"><div class="k">Categories</div><div class="v" id="statCats">0</div></div>
+    <div class="stat"><div class="k">Storage</div><div class="v" id="statStorage">OK</div></div>
+  </section>
+
+  <main class="grid">
+    <section class="panel">
+      <div class="panel-head">
+        <div>
+          <h2 id="formHeading">Add Product</h2>
+          <div class="panel-sub">Use the form below to create or edit one item. Images can come from a file upload or a direct URL. Uploaded files are compressed before saving so localStorage does not explode like a cheap firecracker.</div>
+        </div>
+        <button class="btn ghost hidden" id="cancelEditBtn" type="button">Cancel edit</button>
+      </div>
+
+      <form class="form" id="productForm">
+        <input type="hidden" id="editingId">
+
+        <div class="field-grid">
+          <div class="field">
+            <label for="name">Product name</label>
+            <input id="name" required placeholder="e.g. Smart WiFi Camera">
+          </div>
+
+          <div class="field">
+            <label for="category">Category</label>
+            <select id="category">
+              <option value="cctv">CCTV Security Systems</option>
+              <option value="audio">Audio Systems</option>
+              <option value="components">Components & Services</option>
+              <option value="appliances">Consumer Electronics</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="price">Price (₹)</label>
+            <input id="price" type="number" min="0" step="1" required placeholder="1499">
+          </div>
+
+          <div class="field">
+            <label for="badge">Badge</label>
+            <input id="badge" placeholder="Popular / New / Premium">
+          </div>
+
+          <div class="field full">
+            <label for="desc">Description</label>
+            <textarea id="desc" required placeholder="Short product description..."></textarea>
+          </div>
+
+          <div class="field full">
+            <label>Product photo</label>
+            <div class="image-row">
+              <div class="field">
+                <input id="imageUrl" placeholder="Paste image URL or leave blank if you upload a file">
+                <div class="helper">If you upload a file, it will be compressed and stored as a data URL.</div>
+              </div>
+              <div class="preview"><img id="previewImg" alt="Preview" src="assets/products/placeholder.webp"></div>
+            </div>
+            <div class="field" style="margin-top:12px;">
+              <input id="imageFile" type="file" accept="image/*">
+            </div>
+          </div>
+
+          <div class="field full">
+            <label>Specs</label>
+            <div class="specs" id="specRows"></div>
+            <div class="footer-actions">
+              <button class="small-btn" type="button" id="addSpecBtn">+ Add spec</button>
+            </div>
+            <div class="helper">Keep 3–6 specs for a clean product card. Empty rows are ignored.</div>
+          </div>
+
+          <div class="field full">
+            <div class="footer-actions">
+              <button class="btn primary" type="submit" id="saveBtn">Save product</button>
+              <button class="btn ghost" type="button" id="resetFormBtn">Reset form</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <div>
+          <h2>Inventory</h2>
+          <div class="panel-sub">Edit the live catalogue. Delete is permanent until you restore the demo set.</div>
+        </div>
+      </div>
+
+      <div class="list-bar">
+        <input class="search" id="search" placeholder="Search products by name, badge, or description">
+        <select id="filter">
+          <option value="all">All categories</option>
+          <option value="cctv">CCTV</option>
+          <option value="audio">Audio</option>
+          <option value="components">Components</option>
+          <option value="appliances">Appliances</option>
+        </select>
+      </div>
+
+      <div class="catalog" id="catalog"></div>
+    </section>
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const DEFAULT_PRODUCTS = [
+
+/* ==========================
+   CONSUMER ELECTRONICS & APPLIANCES
+========================== */
+
+{
+  id: 1,
+  category: "appliances",
+  name: "Ceiling Fans",
+  image: "assets/products/ceiling-fan.webp",
+  gradClass: "comp-grad",
+  desc: "Energy-efficient ceiling fans suitable for homes, offices, and commercial spaces.",
+  price: 1499,
+  badge: "Popular",
+  specs:{
+    Type:"Ceiling Fan",
+    Speed:"High Airflow",
+    Power:"Energy Saving",
+    Warranty:"Brand Warranty"
+  }
+},
+
+{
+  id: 2,
+  category: "appliances",
+  name: "Table & Wall Fans",
+  image: "assets/products/table-wall-fan.webp",
+  gradClass: "comp-grad",
+  desc: "Portable table fans and wall-mounted cooling solutions.",
+  price: 999,
+  badge:null,
+  specs:{
+    Type:"Portable",
+    Speeds:"Multiple",
+    Use:"Home & Office",
+    Warranty:"Available"
+  }
+},
+
+{
+  id: 3,
+  category: "appliances",
+  name: "Mixer Grinder",
+  image: "assets/products/mixer-grinder.webp",
+  gradClass: "comp-grad",
+  desc: "Powerful mixer grinders designed for daily kitchen use.",
+  price: 2499,
+  badge:null,
+  specs:{
+    Motor:"High Power",
+    Jars:"Multiple",
+    Use:"Kitchen",
+    Warranty:"Yes"
+  }
+},
+
+{
+  id: 4,
+  category: "appliances",
+  name: "Electric Iron Box",
+  image: "assets/products/iron-box.webp",
+  gradClass: "comp-grad",
+  desc: "Reliable dry and steam irons from trusted brands.",
+  price: 699,
+  badge:null,
+  specs:{
+    Type:"Dry/Steam",
+    Plate:"Non-Stick",
+    Power:"Fast Heating",
+    Warranty:"Yes"
+  }
+},
+
+{
+  id: 5,
+  category: "appliances",
+  name: "Gas Stove",
+  image: "assets/products/gas-stove.webp",
+  gradClass: "comp-grad",
+  desc: "Single and multi-burner gas stoves for modern kitchens.",
+  price: 1899,
+  badge:null,
+  specs:{
+    Burners:"1-4",
+    Material:"Steel",
+    Ignition:"Manual/Auto",
+    Warranty:"Available"
+  }
+},
+
+{
+  id: 6,
+  category: "appliances",
+  name: "Emergency Lights",
+  image: "assets/products/emergency-light.webp",
+  gradClass: "comp-grad",
+  desc: "Rechargeable emergency lights with long backup.",
+  price: 599,
+  badge:null,
+  specs:{
+    Battery:"Rechargeable",
+    Backup:"Long Runtime",
+    Brightness:"LED",
+    Use:"Emergency"
+  }
+},
+
+{
+  id: 7,
+  category: "appliances",
+  name: "Torch Lights",
+  image: "assets/products/torch-light.webp",
+  gradClass: "comp-grad",
+  desc: "High-brightness LED torch lights for indoor and outdoor use.",
+  price: 199,
+  badge:null,
+  specs:{
+    Type:"LED",
+    Range:"Long Distance",
+    Battery:"Rechargeable",
+    Use:"Outdoor"
+  }
+},
+
+{
+  id: 8,
+  category: "appliances",
+  name: "Extension Boards",
+  image: "assets/products/extension-board.webp",
+  gradClass: "comp-grad",
+  desc: "Heavy-duty extension boards with surge protection.",
+  price: 249,
+  badge:null,
+  specs:{
+    Ports:"Multiple",
+    Safety:"Protected",
+    Cable:"Heavy Duty",
+    Use:"Home & Office"
+  }
+},
+
+{
+  id: 9,
+  category: "appliances",
+  name: "Induction Cooktop",
+  image: "assets/products/induction-cooktop.webp",
+  gradClass: "comp-grad",
+  desc: "Fast and efficient induction cooking solutions.",
+  price: 1899,
+  badge:null,
+  specs:{
+    Controls:"Digital",
+    Heating:"Fast",
+    Safety:"Auto Cutoff",
+    Warranty:"Yes"
+  }
+},
+
+{
+  id: 10,
+  category: "appliances",
+  name: "Infrared Cooktop",
+  image: "assets/products/infrared-cooktop.webp",
+  gradClass: "comp-grad",
+  desc: "Infrared cooktops compatible with all cookware.",
+  price: 2499,
+  badge:"New",
+  specs:{
+    Heating:"Infrared",
+    Surface:"Glass",
+    Controls:"Touch",
+    Warranty:"Yes"
+  }
+},
+
+/* ==========================
+   ELECTRICAL & ELECTRONIC COMPONENTS
+========================== */
+
+{
+  id: 11,
+  category: "components",
+  name: "TV & AC Remotes",
+  image: "assets/products/remotes.webp",
+  gradClass: "comp-grad",
+  desc: "Original and universal TV and AC remote controls.",
+  price: 250,
+  badge:null,
+  specs:{
+    Compatibility:"Universal",
+    Brands:"Multiple",
+    Setup:"Easy",
+    Warranty:"Available"
+  }
+},
+
+{
+  id: 12,
+  category: "components",
+  name: "Audio Video Cables",
+  image: "assets/products/av-cables.webp",
+  gradClass: "comp-grad",
+  desc: "HDMI, AUX, RCA, optical and AV cables.",
+  price: 99,
+  badge:null,
+  specs:{
+    Types:"HDMI/AUX/RCA",
+    Quality:"Premium",
+    Length:"Various",
+    Use:"Audio & Video"
+  }
+},
+
+{
+  id: 13,
+  category: "components",
+  name: "Connectors & Adaptors",
+  image: "assets/products/connectors.webp",
+  gradClass: "comp-grad",
+  desc: "Audio, video, power and networking connectors.",
+  price: 49,
+  badge:null,
+  specs:{
+    Type:"Various",
+    Material:"Premium",
+    Use:"Repair & Installation",
+    Stock:"Large"
+  }
+},
+
+{
+  id: 14,
+  category: "components",
+  name: "LED Lighting",
+  image: "assets/products/led-lighting.webp",
+  gradClass: "comp-grad",
+  desc: "LED bulbs, tubes, panels and decorative lighting.",
+  price: 79,
+  badge:"Popular",
+  specs:{
+    Type:"LED",
+    Brightness:"High",
+    Energy:"Saving",
+    Warranty:"Available"
+  }
+},
+
+{
+  id: 15,
+  category: "components",
+  name: "Electrical Switches",
+  image: "assets/products/switches.webp",
+  gradClass: "comp-grad",
+  desc: "Modular switches and electrical accessories.",
+  price: 49,
+  badge:null,
+  specs:{
+    Style:"Modular",
+    Safety:"Certified",
+    Quality:"Premium",
+    Use:"Home & Office"
+  }
+},
+
+{
+  id: 16,
+  category: "components",
+  name: "Electronic Components",
+  image: "assets/products/electronic-components.webp",
+  gradClass: "comp-grad",
+  desc: "Resistors, capacitors, ICs, relays and electronic parts.",
+  price: 20,
+  badge:null,
+  specs:{
+    Category:"Electronics",
+    Stock:"Large",
+    Use:"Repair",
+    Quality:"Tested"
+  }
+},
+
+{
+  id: 17,
+  category: "components",
+  name: "AC-DC SMPS",
+  image: "assets/products/smps.webp",
+  gradClass: "comp-grad",
+  desc: "Reliable switching power supplies for electronics and CCTV systems.",
+  price: 299,
+  badge:null,
+  specs:{
+    Output:"Various",
+    Efficiency:"High",
+    Protection:"Built-In",
+    Use:"Electronics"
+  }
+},
+
+{
+  id: 18,
+  category: "components",
+  name: "Electrical Cables & Wires",
+  image: "assets/products/cables.webp",
+  gradClass: "comp-grad",
+  desc: "High-quality electrical wires and cables.",
+  price: 25,
+  badge:null,
+  specs:{
+    Material:"Copper",
+    Safety:"Certified",
+    Gauge:"Various",
+    Use:"Electrical"
+  }
+},
+
+/* ==========================
+   AUDIO SYSTEMS
+========================== */
+
+{
+  id: 19,
+  category: "audio",
+  name: "Home Audio Amplifiers",
+  image: "assets/products/home-amplifier.webp",
+  gradClass: "audio-grad",
+  desc: "Powerful amplifiers for home audio and PA systems.",
+  price: 2500,
+  badge:"Popular",
+  specs:{
+    Power:"High Output",
+    Inputs:"Multiple",
+    Audio:"Hi-Fi",
+    Use:"Home Audio"
+  }
+},
+
+{
+  id: 20,
+  category: "audio",
+  name: "Speakers & Woofers",
+  image: "assets/products/speakers.webp",
+  gradClass: "audio-grad",
+  desc: "Wide range of speakers, woofers and tweeters.",
+  price: 799,
+  badge:null,
+  specs:{
+    Size:"Various",
+    Sound:"Clear",
+    Quality:"Premium",
+    Use:"Audio Systems"
+  }
+},
+
+{
+  id: 21,
+  category: "audio",
+  name: "Subwoofers",
+  image: "assets/products/subwoofer.webp",
+  gradClass: "audio-grad",
+  desc: "Deep bass subwoofers for immersive sound.",
+  price: 1499,
+  badge:null,
+  specs:{
+    Bass:"Deep",
+    Size:"Various",
+    Power:"High",
+    Use:"Home & Car"
+  }
+},
+
+{
+  id: 22,
+  category: "audio",
+  name: "Car Audio Systems",
+  image: "assets/products/car-audio.webp",
+  gradClass: "audio-grad",
+  desc: "Car speakers, amplifiers and accessories.",
+  price: 2999,
+  badge:null,
+  specs:{
+    Type:"Automotive",
+    Audio:"Enhanced",
+    Installation:"Available",
+    Warranty:"Yes"
+  }
+},
+
+{
+  id: 23,
+  category: "audio",
+  name: "Class-D Amplifier Boards",
+  image: "assets/products/class-d-board.webp",
+  gradClass: "audio-grad",
+  desc: "Efficient amplifier boards for DIY audio projects.",
+  price: 699,
+  badge:null,
+  specs:{
+    Class:"D",
+    Efficiency:"High",
+    Power:"Various",
+    Use:"DIY Audio"
+  }
+},
+
+{
+  id: 24,
+  category: "audio",
+  name: "Class-AB Amplifier Boards",
+  image: "assets/products/class-ab-board.webp",
+  gradClass: "audio-grad",
+  desc: "Warm sounding Class AB amplifier modules.",
+  price: 899,
+  badge:null,
+  specs:{
+    Class:"AB",
+    Sound:"Hi-Fi",
+    Power:"Various",
+    Use:"Amplifiers"
+  }
+},
+
+{
+  id: 25,
+  category: "audio",
+  name: "Home Theatre Systems",
+  image: "assets/products/home-theatre.webp",
+  gradClass: "audio-grad",
+  desc: "Immersive surround sound home theatre systems.",
+  price: 3999,
+  badge:"Premium",
+  specs:{
+    Audio:"Surround",
+    Connectivity:"Bluetooth",
+    Use:"Entertainment",
+    Warranty:"Yes"
+  }
+},
+
+{
+  id: 26,
+  category: "audio",
+  name: "Sound Bars",
+  image: "assets/products/soundbar.webp",
+  gradClass: "audio-grad",
+  desc: "Compact soundbars with powerful audio performance.",
+  price: 2499,
+  badge:null,
+  specs:{
+    Audio:"Enhanced",
+    Connectivity:"Bluetooth",
+    Use:"TV Audio",
+    Warranty:"Yes"
+  }
+},
+
+{
+  id: 27,
+  category: "audio",
+  name: "Bluetooth Speakers",
+  image: "assets/products/bluetooth-speaker.webp",
+  gradClass: "audio-grad",
+  desc: "Portable wireless Bluetooth speakers.",
+  price: 599,
+  badge:null,
+  specs:{
+    Wireless:"Bluetooth",
+    Battery:"Rechargeable",
+    Audio:"Portable",
+    Use:"Indoor/Outdoor"
+  }
+},
+
+{
+  id: 28,
+  category: "audio",
+  name: "Trolley Speakers",
+  image: "assets/products/trolley-speaker.webp",
+  gradClass: "audio-grad",
+  desc: "Portable PA systems with microphones.",
+  price: 4999,
+  badge:null,
+  specs:{
+    Portable:"Yes",
+    Battery:"Built-In",
+    Mic:"Included",
+    Use:"Events"
+  }
+},
+
+{
+  id: 29,
+  category: "audio",
+  name: "Microphones",
+  image: "assets/products/microphone.webp",
+  gradClass: "audio-grad",
+  desc: "Professional wired and wireless microphones.",
+  price: 399,
+  badge:null,
+  specs:{
+    Type:"Wired/Wireless",
+    Audio:"Clear",
+    Quality:"Professional",
+    Use:"PA & Karaoke"
+  }
+},
+
+/* ==========================
+   CCTV SECURITY SYSTEMS
+========================== */
+
+{
+  id: 30,
+  category: "cctv",
+  name: "WiFi Smart Cameras",
+  image: "assets/products/wifi-camera.webp",
+  gradClass: "cctv-grad",
+  desc: "Mobile-controlled smart security cameras.",
+  price: 1499,
+  badge:"Popular",
+  specs:{
+    Connectivity:"WiFi",
+    Access:"Mobile App",
+    Vision:"Night Vision",
+    Resolution:"HD"
+  }
+},
+
+{
+  id: 31,
+  category: "cctv",
+  name: "4G SIM Cameras",
+  image: "assets/products/4g-camera.webp",
+  gradClass: "cctv-grad",
+  desc: "Remote surveillance without broadband connection.",
+  price: 3499,
+  badge:null,
+  specs:{
+    Network:"4G",
+    Access:"Remote",
+    Storage:"SD Card",
+    Vision:"Night Vision"
+  }
+},
+
+{
+  id: 32,
+  category: "cctv",
+  name: "Bullet CCTV Cameras",
+  image: "assets/products/bullet-camera.webp",
+  gradClass: "cctv-grad",
+  desc: "Outdoor bullet cameras with HD recording.",
+  price: 999,
+  badge:null,
+  specs:{
+    Type:"Bullet",
+    Resolution:"HD",
+    Vision:"IR",
+    Use:"Outdoor"
+  }
+},
+
+{
+  id: 33,
+  category: "cctv",
+  name: "Dome CCTV Cameras",
+  image: "assets/products/dome-camera.webp",
+  gradClass: "cctv-grad",
+  desc: "Indoor dome cameras with discreet design.",
+  price: 999,
+  badge:null,
+  specs:{
+    Type:"Dome",
+    Resolution:"HD",
+    Vision:"IR",
+    Use:"Indoor"
+  }
+},
+
+{
+  id: 34,
+  category: "cctv",
+  name: "DVR Surveillance Systems",
+  image: "assets/products/dvr-system.webp",
+  gradClass: "cctv-grad",
+  desc: "4, 8 and 16 channel CCTV DVR systems.",
+  price: 4500,
+  badge:null,
+  specs:{
+    Channels:"4/8/16",
+    Recording:"24x7",
+    Storage:"Expandable",
+    Access:"Remote"
+  }
+},
+
+{
+  id: 35,
+  category: "cctv",
+  name: "IP Network Cameras",
+  image: "assets/products/ip-camera.webp",
+  gradClass: "cctv-grad",
+  desc: "Advanced IP surveillance cameras.",
+  price: 1999,
+  badge:null,
+  specs:{
+    Network:"IP",
+    Resolution:"High",
+    Monitoring:"Remote",
+    Installation:"Professional"
+  }
+},
+
+{
+  id: 36,
+  category: "cctv",
+  name: "IP NVR Camera Systems",
+  image: "assets/products/nvr-system.webp",
+  gradClass: "cctv-grad",
+  desc: "Professional IP camera recording systems.",
+  price: 8500,
+  badge:"Premium",
+  specs:{
+    Recording:"NVR",
+    Cameras:"Multiple",
+    Storage:"Expandable",
+    Monitoring:"Remote"
+  }
+},
+
+{
+  id: 37,
+  category: "cctv",
+  name: "CCTV Storage Solutions",
+  image: "assets/products/cctv-storage.webp",
+  gradClass: "cctv-grad",
+  desc: "Surveillance-grade storage drives and accessories.",
+  price: 2499,
+  badge:null,
+  specs:{
+    Capacity:"1TB+",
+    Type:"Surveillance HDD",
+    Reliability:"24/7",
+    Use:"CCTV Systems"
+  }
+}
+
+];
+
+const STORAGE_KEY_PRODUCTS = 'pv_electronics_products_v1';
+const FALLBACK_IMAGE = 'assets/products/placeholder.webp';
+
+let PRODUCTS = [];
+let editingImageData = '';
+let editingFileName = '';
+let specRowIndex = 0;
+
+const CATEGORY_LABELS = {
+  cctv: 'CCTV Security System',
+  audio: 'Audio System',
+  components: 'Components & Services',
+  appliances: 'Consumer Electronics'
+};
+
+function escapeHTML(value) {
+  return String(value ?? '').replace(/[&<>"']/g, ch => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;'
+  }[ch]));
+}
+
+function catLabel(cat) {
+  return CATEGORY_LABELS[cat] || 'Products';
+}
+
+function gradForCategory(cat) {
+  return ({
+    cctv: 'cctv-grad',
+    audio: 'audio-grad',
+    components: 'comp-grad',
+    appliances: 'comp-grad'
+  })[cat] || 'comp-grad';
+}
+
+function normalizeProduct(raw, index = 0) {
+  const safeCategory = ['cctv', 'audio', 'components', 'appliances'].includes(raw?.category) ? raw.category : 'components';
+  const specs = raw && typeof raw.specs === 'object' && raw.specs ? raw.specs : {};
+  return {
+    id: Number(raw?.id) || index + 1,
+    category: safeCategory,
+    name: String(raw?.name ?? 'Untitled Product').trim(),
+    image: String(raw?.image ?? '').trim(),
+    gradClass: String(raw?.gradClass ?? gradForCategory(safeCategory)),
+    desc: String(raw?.desc ?? '').trim(),
+    price: Number(raw?.price) || 0,
+    badge: raw?.badge ? String(raw.badge).trim() : '',
+    specs: Object.fromEntries(
+      Object.entries(specs).map(([k, v]) => [String(k).trim(), String(v).trim()]).filter(([k, v]) => k && v)
+    )
+  };
+}
+
+function normalizeCatalog(list) {
+  const normalized = Array.isArray(list) ? list.map((p, i) => normalizeProduct(p, i)) : [];
+  const used = new Set();
+  let nextId = 1;
+  return normalized.map((p) => {
+    let id = p.id;
+    if (!Number.isFinite(id) || id <= 0 || used.has(id)) {
+      while (used.has(nextId)) nextId += 1;
+      id = nextId;
+    }
+    used.add(id);
+    nextId = Math.max(nextId, id + 1);
+    return { ...p, id };
+  });
+}
+
+function saveProducts(list) {
+  PRODUCTS = normalizeCatalog(list);
+  try {
+    localStorage.setItem(STORAGE_KEY_PRODUCTS, JSON.stringify(PRODUCTS));
+  } catch (err) {
+    toast('Storage full. Reduce image sizes or delete some products.');
+  }
+  return PRODUCTS;
+}
+
+function loadProducts() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY_PRODUCTS);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) {
+        const cleaned = normalizeCatalog(parsed);
+        if (cleaned.length) return cleaned;
+      }
+    }
+  } catch (err) {}
+  const fallback = normalizeCatalog(DEFAULT_PRODUCTS);
+  try { localStorage.setItem(STORAGE_KEY_PRODUCTS, JSON.stringify(fallback)); } catch (err) {}
+  return fallback;
+}
+
+function getProducts() {
+  PRODUCTS = loadProducts();
+  return PRODUCTS;
+}
+
+function nextProductId() {
+  return getProducts().reduce((max, item) => Math.max(max, Number(item.id) || 0), 0) + 1;
+}
+
+function safeImageSrc(src) {
+  return String(src || '').trim() || FALLBACK_IMAGE;
+}
+
+function toast(message) {
+  const t = document.getElementById('toast');
+  t.textContent = message;
+  t.classList.add('show');
+  clearTimeout(window.__toastTimer);
+  window.__toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+function specRow(key = '', value = '') {
+  const id = `spec-${++specRowIndex}`;
+  return `
+    <div class="spec-row" data-spec-row id="${id}">
+      <input class="spec-key" placeholder="Spec name" value="${escapeHTML(key)}">
+      <input class="spec-val" placeholder="Spec value" value="${escapeHTML(value)}">
+      <button class="small-btn red" type="button" data-remove-spec>Delete</button>
+    </div>
+  `;
+}
+
+function ensureAtLeastOneSpecRow() {
+  const holder = document.getElementById('specRows');
+  if (!holder.innerHTML.trim()) holder.innerHTML = specRow();
+}
+
+function renderSpecRows(specs = {}) {
+  const holder = document.getElementById('specRows');
+  const entries = Object.entries(specs);
+  holder.innerHTML = entries.length ? entries.map(([k, v]) => specRow(k, v)).join('') : specRow();
+  holder.querySelectorAll('[data-remove-spec]').forEach(btn => btn.addEventListener('click', () => {
+    btn.closest('[data-spec-row]')?.remove();
+    ensureAtLeastOneSpecRow();
+  }));
+}
+
+function collectSpecs() {
+  const specs = {};
+  document.querySelectorAll('#specRows [data-spec-row]').forEach(row => {
+    const k = row.querySelector('.spec-key')?.value.trim();
+    const v = row.querySelector('.spec-val')?.value.trim();
+    if (k && v) specs[k] = v;
+  });
+  return specs;
+}
+
+async function fileToDataUrl(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result));
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+async function compressImage(dataUrl, maxDim = 1200, quality = 0.82) {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => {
+      const scale = Math.min(1, maxDim / Math.max(img.width, img.height));
+      const w = Math.max(1, Math.round(img.width * scale));
+      const h = Math.max(1, Math.round(img.height * scale));
+      const canvas = document.createElement('canvas');
+      canvas.width = w;
+      canvas.height = h;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, w, h);
+      resolve(canvas.toDataURL('image/jpeg', quality));
+    };
+    img.onerror = () => resolve(dataUrl);
+    img.src = dataUrl;
+  });
+}
+
+function setPreview(src) {
+  const img = document.getElementById('previewImg');
+  img.src = safeImageSrc(src);
+}
+
+function clearForm() {
+  document.getElementById('editingId').value = '';
+  document.getElementById('name').value = '';
+  document.getElementById('category').value = 'cctv';
+  document.getElementById('price').value = '';
+  document.getElementById('badge').value = '';
+  document.getElementById('desc').value = '';
+  document.getElementById('imageUrl').value = '';
+  document.getElementById('imageFile').value = '';
+  editingImageData = '';
+  editingFileName = '';
+  document.getElementById('formHeading').textContent = 'Add Product';
+  document.getElementById('cancelEditBtn').classList.add('hidden');
+  renderSpecRows({});
+  setPreview(FALLBACK_IMAGE);
+}
+
+function fillForm(product) {
+  document.getElementById('editingId').value = product.id;
+  document.getElementById('name').value = product.name || '';
+  document.getElementById('category').value = product.category || 'cctv';
+  document.getElementById('price').value = product.price ?? '';
+  document.getElementById('badge').value = product.badge || '';
+  document.getElementById('desc').value = product.desc || '';
+  document.getElementById('imageUrl').value = product.image || '';
+  document.getElementById('imageFile').value = '';
+  editingImageData = '';
+  editingFileName = '';
+  document.getElementById('formHeading').textContent = `Edit Product #${product.id}`;
+  document.getElementById('cancelEditBtn').classList.remove('hidden');
+  renderSpecRows(product.specs || {});
+  setPreview(product.image);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function upsertProduct() {
+  const idValue = document.getElementById('editingId').value.trim();
+  const current = idValue ? getProducts().find(p => String(p.id) === idValue) : null;
+  const name = document.getElementById('name').value.trim();
+  const category = document.getElementById('category').value;
+  const price = Number(document.getElementById('price').value);
+  const badge = document.getElementById('badge').value.trim();
+  const desc = document.getElementById('desc').value.trim();
+  const imageUrl = document.getElementById('imageUrl').value.trim();
+  const specs = collectSpecs();
+
+  if (!name || !desc || Number.isNaN(price)) {
+    toast('Fill the required fields.');
+    return;
+  }
+
+  const image = editingImageData || imageUrl || current?.image || '';
+  if (!image) {
+    toast('Add a photo first.');
+    return;
+  }
+
+  const product = {
+    id: current?.id || nextProductId(),
+    category,
+    name,
+    image,
+    gradClass: gradForCategory(category),
+    desc,
+    price,
+    badge,
+    specs
+  };
+
+  const list = getProducts();
+  const idx = list.findIndex(p => p.id === product.id);
+  if (idx >= 0) list[idx] = product;
+  else list.unshift(product);
+
+  saveProducts(list);
+  renderCatalog();
+  renderStats();
+  toast(current ? 'Product updated.' : 'Product added.');
+  clearForm();
+}
+
+function deleteProduct(id) {
+  const list = getProducts().filter(p => p.id !== id);
+  saveProducts(list);
+  renderCatalog();
+  renderStats();
+  toast('Product deleted.');
+}
+
+function editProduct(id) {
+  const product = getProducts().find(p => p.id === id);
+  if (!product) return;
+  fillForm(product);
+}
+
+function renderCatalog() {
+  const catalog = document.getElementById('catalog');
+  const query = document.getElementById('search').value.trim().toLowerCase();
+  const filter = document.getElementById('filter').value;
+  const list = getProducts().filter(p => {
+    const haystack = `${p.name} ${p.desc} ${p.badge || ''} ${catLabel(p.category)}`.toLowerCase();
+    const matchQuery = !query || haystack.includes(query);
+    const matchFilter = filter === 'all' || p.category === filter;
+    return matchQuery && matchFilter;
+  });
+
+  if (!list.length) {
+    catalog.innerHTML = '<div class="empty">No matching products. Try another search or add a new item.</div>';
+    return;
+  }
+
+  catalog.innerHTML = list.map(p => `
+    <article class="item">
+      <div class="thumb">
+        <img src="${escapeHTML(safeImageSrc(p.image))}" alt="${escapeHTML(p.name)}" onerror="this.src='${FALLBACK_IMAGE}'">
+      </div>
+      <div class="meta">
+        <div class="name">${escapeHTML(p.name)}</div>
+        <div class="sub">
+          <span class="badge">${escapeHTML(catLabel(p.category))}</span>
+          <span>₹${Number(p.price || 0).toLocaleString('en-IN')}</span>
+          ${p.badge ? `<span class="badge">${escapeHTML(p.badge)}</span>` : ''}
+        </div>
+        <div class="sub" style="margin-top:8px;">${escapeHTML(p.desc.slice(0, 120))}${p.desc.length > 120 ? '…' : ''}</div>
+      </div>
+      <div class="item-actions">
+        <button class="small-btn" type="button" onclick="editProduct(${p.id})">Edit</button>
+        <button class="small-btn red" type="button" onclick="deleteProduct(${p.id})">Delete</button>
+      </div>
+    </article>
+  `).join('');
+}
+
+function renderStats() {
+  const list = getProducts();
+  const cats = new Set(list.map(p => p.category));
+  document.getElementById('statCount').textContent = list.length;
+  document.getElementById('statCats').textContent = cats.size;
+  document.getElementById('statStorage').textContent = 'OK';
+}
+
+async function handleImageUpload(file) {
+  if (!file) return;
+  const raw = await fileToDataUrl(file);
+  editingImageData = await compressImage(raw, 1200, 0.82);
+  editingFileName = file.name;
+  document.getElementById('imageUrl').value = '';
+  setPreview(editingImageData);
+  toast('Image ready to save.');
+}
+
+function resetToDemo() {
+  saveProducts(DEFAULT_PRODUCTS);
+  renderCatalog();
+  renderStats();
+  clearForm();
+  toast('Demo catalogue restored.');
+}
+
+function clearAllProducts() {
+  saveProducts([]);
+  renderCatalog();
+  renderStats();
+  clearForm();
+  toast('All products removed.');
+}
+
+document.getElementById('productForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  upsertProduct();
+});
+
+document.getElementById('addSpecBtn').addEventListener('click', () => {
+  const holder = document.getElementById('specRows');
+  holder.insertAdjacentHTML('beforeend', specRow());
+  holder.querySelectorAll('[data-remove-spec]').forEach(btn => btn.onclick = () => {
+    btn.closest('[data-spec-row]')?.remove();
+    ensureAtLeastOneSpecRow();
+  });
+});
+
+document.getElementById('resetFormBtn').addEventListener('click', clearForm);
+document.getElementById('cancelEditBtn').addEventListener('click', clearForm);
+document.getElementById('restoreBtn').addEventListener('click', resetToDemo);
+document.getElementById('clearBtn').addEventListener('click', () => {
+  if (confirm('Delete every product from the local catalogue?')) clearAllProducts();
+});
+
+document.getElementById('search').addEventListener('input', renderCatalog);
+document.getElementById('filter').addEventListener('change', renderCatalog);
+document.getElementById('imageFile').addEventListener('change', async (e) => {
+  const file = e.target.files && e.target.files[0];
+  if (file) await handleImageUpload(file);
+});
+document.getElementById('imageUrl').addEventListener('input', (e) => {
+  if (e.target.value.trim()) {
+    editingImageData = '';
+    setPreview(e.target.value.trim());
+  } else if (!editingImageData) {
+    setPreview(FALLBACK_IMAGE);
+  }
+});
+
+window.addEventListener('storage', (e) => {
+  if (e.key === STORAGE_KEY_PRODUCTS) {
+    PRODUCTS = loadProducts();
+    renderCatalog();
+    renderStats();
+  }
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+  PRODUCTS = loadProducts();
+  renderSpecRows({ Type: '', Value: '' });
+  clearForm();
+  renderCatalog();
+  renderStats();
+});
+</script>
+</body>
+</html>

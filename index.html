@@ -868,6 +868,32 @@ nav.scrolled {
 }
 .filter-btn.active, .filter-btn:hover { background:var(--wine); border-color:var(--wine); color:var(--sand); }
 
+.products-toolbar { display:flex; justify-content:flex-end; margin:-8px 0 22px; }
+.products-note {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--sand-dim);
+  text-align: right;
+}
+.products-empty {
+  grid-column: 1 / -1;
+  border: 1px dashed var(--border-wine);
+  padding: 48px 24px;
+  text-align: center;
+  color: var(--sand-dim);
+  background: rgba(255,255,255,0.02);
+  border-radius: var(--radius);
+  font-size: 14px;
+  line-height: 1.7;
+}
+.products-empty strong { color: var(--sand); }
+@media (max-width: 900px) {
+  .products-toolbar { justify-content:center; }
+  .products-note { text-align:center; }
+}
+
 .products-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(290px,1fr)); gap:20px; }
 .product-card {
   background:var(--panel); border:1px solid var(--border); overflow:hidden;
@@ -1656,7 +1682,6 @@ footer { background:var(--deep); border-top:1px solid var(--border); padding:80p
     </div>
 
     <div class="products-toolbar reveal">
-      <div class="products-note"></div>
     </div>
 
     <div class="products-grid" id="productsGrid"></div>
@@ -1954,10 +1979,11 @@ function initTextEffects() {
   });
 }
 
+
 /* ══════════════════════════════════════
-   PRODUCT DATA
+   PRODUCT DATA + LOCAL STORAGE
 ══════════════════════════════════════ */
-const PRODUCTS = [
+const DEFAULT_PRODUCTS = [
 
 /* ==========================
    CONSUMER ELECTRONICS & APPLIANCES
@@ -2606,135 +2632,282 @@ const PRODUCTS = [
 
 ];
 
-let cart = [];
+const STORAGE_KEY_PRODUCTS = 'pv_electronics_products_v1';
+const FALLBACK_IMAGE = 'assets/products/placeholder.webp';
+const WA_NUMBER = '91995523420';
 
-function catLabel(cat) {
-  return { cctv:'CCTV Security System', audio:'Audio System', components:'Components & Services' }[cat] || cat;
+let PRODUCTS = [];
+let cart = [];
+let currentFilter = 'all';
+
+const CATEGORY_LABELS = {
+  cctv: 'CCTV Security System',
+  audio: 'Audio System',
+  components: 'Components & Services',
+  appliances: 'Consumer Electronics'
+};
+
+const CATEGORY_GRADS = {
+  cctv: 'cctv-grad',
+  audio: 'audio-grad',
+  components: 'comp-grad',
+  appliances: 'comp-grad'
+};
+
+function escapeHTML(value) {
+  return String(value ?? '').replace(/[&<>"']/g, ch => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;'
+  }[ch]));
 }
 
+function formatText(value) {
+  return escapeHTML(value).replace(/\n/g, '<br>');
+}
+
+function catLabel(cat) {
+  return CATEGORY_LABELS[cat] || 'Products';
+}
+
+function gradForCategory(cat) {
+  return CATEGORY_GRADS[cat] || 'comp-grad';
+}
+
+function normalizeProduct(raw, index = 0) {
+  const safeCategory = ['cctv', 'audio', 'components', 'appliances'].includes(raw?.category) ? raw.category : 'components';
+  const specs = raw && typeof raw.specs === 'object' && raw.specs ? raw.specs : {};
+  return {
+    id: Number(raw?.id) || (index + 1),
+    category: safeCategory,
+    name: String(raw?.name ?? 'Untitled Product').trim(),
+    image: String(raw?.image ?? '').trim(),
+    gradClass: String(raw?.gradClass ?? gradForCategory(safeCategory)),
+    desc: String(raw?.desc ?? '').trim(),
+    price: Number(raw?.price) || 0,
+    badge: raw?.badge ? String(raw.badge).trim() : '',
+    specs: Object.fromEntries(
+      Object.entries(specs)
+        .map(([k, v]) => [String(k).trim(), String(v).trim()])
+        .filter(([k, v]) => k && v)
+    )
+  };
+}
+
+function normalizeCatalog(list) {
+  const normalized = Array.isArray(list) ? list.map((p, i) => normalizeProduct(p, i)) : [];
+  const used = new Set();
+  let nextId = 1;
+
+  return normalized.map((p) => {
+    let id = p.id;
+    if (!Number.isFinite(id) || id <= 0 || used.has(id)) {
+      while (used.has(nextId)) nextId += 1;
+      id = nextId;
+    }
+    used.add(id);
+    nextId = Math.max(nextId, id + 1);
+    return { ...p, id };
+  });
+}
+
+function saveProducts(list) {
+  PRODUCTS = normalizeCatalog(list);
+  try {
+    localStorage.setItem(STORAGE_KEY_PRODUCTS, JSON.stringify(PRODUCTS));
+  } catch (err) {
+    console.warn('Unable to save products to localStorage', err);
+  }
+  return PRODUCTS;
+}
+
+function loadProducts() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY_PRODUCTS);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) {
+        const cleaned = normalizeCatalog(parsed);
+        if (cleaned.length) return cleaned;
+      }
+    }
+  } catch (err) {
+    console.warn('Unable to read product catalog from localStorage', err);
+  }
+  const fallback = normalizeCatalog(DEFAULT_PRODUCTS);
+  try {
+    localStorage.setItem(STORAGE_KEY_PRODUCTS, JSON.stringify(fallback));
+  } catch (err) {}
+  return fallback;
+}
+
+function getProducts() {
+  PRODUCTS = loadProducts();
+  return PRODUCTS;
+}
+
+function nextProductId() {
+  return getProducts().reduce((max, item) => Math.max(max, Number(item.id) || 0), 0) + 1;
+}
+
+function safeImageSrc(src) {
+  return String(src || '').trim() || FALLBACK_IMAGE;
+}
+
+function syncCartWithCatalog() {
+  const list = getProducts();
+  cart = cart
+    .map((item) => {
+      const latest = list.find((p) => p.id === item.id);
+      return latest ? { ...latest, qty: item.qty } : null;
+    })
+    .filter(Boolean);
+  updateCartUI();
+}
+
+let currentCartFilter = 'all';
+
 function renderProducts(filter = 'all') {
+  currentFilter = filter;
   const grid = document.getElementById('productsGrid');
+  if (!grid) return;
 
-  const filtered =
-    filter === 'all'
-      ? PRODUCTS
-      : PRODUCTS.filter(p => p.category === filter);
+  const list = getProducts();
+  const filtered = filter === 'all'
+    ? list
+    : list.filter(p => p.category === filter);
 
-  grid.innerHTML = filtered.map(p => `
-    <div class="product-card reveal" onclick="openModal(${p.id})">
-
-      <div class="product-img">
-        <div class="product-img-bg ${p.gradClass}"></div>
-
-        <img
-          src="${p.image}"
-          alt="${p.name}"
-          class="product-photo"
-          loading="lazy"
-          onerror="this.src='assets/products/placeholder.webp'"
-        >
-
-        ${p.badge ? `
-          <div class="product-badge">
-            ${p.badge}
-          </div>
-        ` : ''}
+  if (!filtered.length) {
+    grid.innerHTML = `
+      <div class="products-empty reveal">
+        <strong>No products yet.</strong><br>
+        Open <code>admin.html</code> and add the first product to start the catalogue.
       </div>
+    `;
+    observeReveal();
+    initTextEffects();
+    return;
+  }
 
-      <div class="product-body">
+  grid.innerHTML = filtered.map(p => {
+    const desc = escapeHTML(p.desc);
+    const shortDesc = desc.length > 82 ? desc.slice(0, 82) + '…' : desc;
+    const specTags = Object.values(p.specs || {}).slice(0, 3)
+      .map(v => `<span class="spec-tag">${escapeHTML(v)}</span>`)
+      .join('');
 
-        <div class="product-cat">
-          ${catLabel(p.category)}
-        </div>
+    return `
+      <div class="product-card reveal" onclick="openModal(${
+        p.id
+      })">
+        <div class="product-img">
+          <div class="product-img-bg ${p.gradClass || gradForCategory(p.category)}"></div>
 
-        <div class="product-name">
-          ${p.name}
-        </div>
-
-        <div class="product-desc">
-          ${p.desc.length > 82
-            ? p.desc.substring(0, 82) + '...'
-            : p.desc}
-        </div>
-
-        <div class="product-specs">
-          ${Object.entries(p.specs)
-            .slice(0, 3)
-            .map(([k, v]) => `
-              <span class="spec-tag">${v}</span>
-            `)
-            .join('')}
-        </div>
-
-        <div class="product-footer">
-          <div class="product-price">
-            ₹${p.price.toLocaleString('en-IN')}
-            <span>/unit</span>
-          </div>
-
-          <button
-            class="add-cart-btn"
-            onclick="event.stopPropagation(); addToCart(${p.id})"
+          <img
+            src="${escapeHTML(safeImageSrc(p.image))}"
+            alt="${escapeHTML(p.name)}"
+            class="product-photo"
+            loading="lazy"
+            onerror="this.src='${FALLBACK_IMAGE}'"
           >
-            + Add
-          </button>
+
+          ${p.badge ? `
+            <div class="product-badge">${escapeHTML(p.badge)}</div>
+          ` : ''}
         </div>
 
-      </div>
+        <div class="product-body">
+          <div class="product-cat">${escapeHTML(catLabel(p.category))}</div>
+          <div class="product-name">${escapeHTML(p.name)}</div>
+          <div class="product-desc">${shortDesc}</div>
 
-    </div>
-  `).join('');
+          <div class="product-specs">
+            ${specTags}
+          </div>
+
+          <div class="product-footer">
+            <div class="product-price">
+              ₹${Number(p.price || 0).toLocaleString('en-IN')}
+              <span>/unit</span>
+            </div>
+
+            <button class="add-cart-btn" onclick="event.stopPropagation(); addToCart(${p.id})">
+              + Add
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
 
   observeReveal();
   initTextEffects();
 }
+
 function filterProducts(filter, btn) {
-  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
-  if(btn) btn.classList.add('active');
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
   renderProducts(filter);
-  document.getElementById('products').scrollIntoView({ behavior:'smooth' });
+  const section = document.getElementById('products');
+  if (section) section.scrollIntoView({ behavior: 'smooth' });
 }
 
-/* ══ CART ══ */
 function addToCart(id) {
-  const p = PRODUCTS.find(x=>x.id===id);
-  const ex = cart.find(i=>i.id===id);
-  if(ex) ex.qty++;
-  else cart.push({...p, qty:1});
+  const p = getProducts().find(x => x.id === id);
+  if (!p) {
+    showToast('Product not found');
+    return;
+  }
+  const ex = cart.find(i => i.id === id);
+  if (ex) ex.qty++;
+  else cart.push({ ...p, qty: 1 });
   updateCartUI();
   showToast(`${p.name} added to cart`);
 }
+
 function removeFromCart(id) {
-  cart = cart.filter(i=>i.id!==id);
+  cart = cart.filter(i => i.id !== id);
   updateCartUI();
 }
-function changeQty(id,delta) {
-  const item = cart.find(i=>i.id===id);
-  if(!item) return;
+
+function changeQty(id, delta) {
+  const item = cart.find(i => i.id === id);
+  if (!item) return;
   item.qty += delta;
-  if(item.qty<=0) removeFromCart(id);
+  if (item.qty <= 0) removeFromCart(id);
   else updateCartUI();
 }
+
 function updateCartUI() {
-  const total = cart.reduce((s,i)=>s+i.price*i.qty,0);
-  const count = cart.reduce((s,i)=>s+i.qty,0);
+  const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
+  const count = cart.reduce((s, i) => s + i.qty, 0);
   const countEl = document.getElementById('cartCount');
-  countEl.textContent = count;
-  countEl.classList.toggle('visible', count>0);
-  document.getElementById('cartTotal').textContent = `₹${total.toLocaleString('en-IN')}`;
-  document.getElementById('checkoutBtn').disabled = cart.length===0;
+  const totalEl = document.getElementById('cartTotal');
   const itemsEl = document.getElementById('cartItems');
-  if(cart.length===0) {
+  const checkoutBtn = document.getElementById('checkoutBtn');
+
+  if (countEl) {
+    countEl.textContent = count;
+    countEl.classList.toggle('visible', count > 0);
+  }
+  if (totalEl) totalEl.textContent = `₹${total.toLocaleString('en-IN')}`;
+  if (checkoutBtn) checkoutBtn.disabled = cart.length === 0;
+
+  if (!itemsEl) return;
+
+  if (cart.length === 0) {
     itemsEl.innerHTML = `<div class="cart-empty"><span class="cart-empty-icon">🛒</span>Your cart is empty.<br>Add some products!</div>`;
   } else {
-    itemsEl.innerHTML = cart.map(i=>`
+    itemsEl.innerHTML = cart.map(i => `
       <div class="cart-item">
         <div class="cart-item-icon">
-  <img src="${i.image}" alt="${i.name}">
-</div>
+          <img src="${escapeHTML(safeImageSrc(i.image))}" alt="${escapeHTML(i.name)}">
+        </div>
         <div class="cart-item-info">
-          <div class="cart-item-name">${i.name}</div>
-          <div class="cart-item-price">₹${i.price.toLocaleString('en-IN')}</div>
+          <div class="cart-item-name">${escapeHTML(i.name)}</div>
+          <div class="cart-item-price">₹${Number(i.price || 0).toLocaleString('en-IN')}</div>
           <div class="cart-item-qty">
             <button class="qty-btn" onclick="changeQty(${i.id},-1)">−</button>
             <span class="qty-num">${i.qty}</span>
@@ -2746,115 +2919,158 @@ function updateCartUI() {
     `).join('');
   }
 }
+
 function toggleCart() {
-  const d=document.getElementById('cartDrawer');
-  const o=document.getElementById('cartOverlay');
-  const open=d.classList.toggle('open');
-  o.classList.toggle('show',open);
-  document.body.style.overflow=open?'hidden':'';
+  const d = document.getElementById('cartDrawer');
+  const o = document.getElementById('cartOverlay');
+  if (!d || !o) return;
+  const open = d.classList.toggle('open');
+  o.classList.toggle('show', open);
+  document.body.style.overflow = open ? 'hidden' : '';
 }
 
-const WA_NUMBER='91995523420';
 function checkout() {
-  if(cart.length===0) return;
-  const lines = cart.map((i,idx)=>`${idx+1}. ${i.qty}× ${i.name} — ₹${(i.price*i.qty).toLocaleString('en-IN')}`).join('\n');
-  const total = cart.reduce((s,i)=>s+i.price*i.qty,0);
+  if (cart.length === 0) return;
+  const lines = cart.map((i, idx) => `${idx + 1}. ${i.qty}× ${i.name} — ₹${(i.price * i.qty).toLocaleString('en-IN')}`).join('\n');
+  const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
   const msg = `Hello Parankamveettil Electronics! 👋\n\nI would like to order:\n\n${lines}\n\n*Total: ₹${total.toLocaleString('en-IN')}*\n\nMy Name: \nMy Location: \n\nPlease confirm availability and delivery details. Thank you!`;
   window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
 }
+
 function openWhatsApp() {
-  window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent('Hello Parankamveettil Electronics! I\'d like to enquire about your products and services. 😊')}`, '_blank');
+  window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent("Hello Parankamveettil Electronics! I'd like to enquire about your products and services. 😊")}`, '_blank');
 }
 
-/* ══ MODAL ══ */
 function openModal(id) {
-  const p = PRODUCTS.find(x=>x.id===id);
+  const p = getProducts().find(x => x.id === id);
+  if (!p) {
+    showToast('Product not found');
+    return;
+  }
+
   document.getElementById('modalBody').innerHTML = `
-    <div class="modal-img ${p.gradClass}">
-  <img
-    src="${p.image}"
-    alt="${p.name}"
-    class="modal-product-image"
-  >
-</div>
+    <div class="modal-img ${p.gradClass || gradForCategory(p.category)}">
+      <img
+        src="${escapeHTML(safeImageSrc(p.image))}"
+        alt="${escapeHTML(p.name)}"
+        class="modal-product-image"
+        onerror="this.src='${FALLBACK_IMAGE}'"
+      >
+    </div>
     <div class="modal-info">
-      <div class="modal-cat">${catLabel(p.category)}</div>
-      <div class="modal-name">${p.name}</div>
-      <div class="modal-desc">${p.desc}</div>
+      <div class="modal-cat">${escapeHTML(catLabel(p.category))}</div>
+      <div class="modal-name">${escapeHTML(p.name)}</div>
+      <div class="modal-desc">${formatText(p.desc)}</div>
       <div class="modal-specs-grid">
-        ${Object.entries(p.specs).map(([k,v])=>`<div class="modal-spec"><div class="modal-spec-key">${k}</div><div class="modal-spec-val">${v}</div></div>`).join('')}
+        ${Object.entries(p.specs || {}).map(([k, v]) => `<div class="modal-spec"><div class="modal-spec-key">${escapeHTML(k)}</div><div class="modal-spec-val">${escapeHTML(v)}</div></div>`).join('')}
       </div>
-      <div class="modal-price">₹${p.price.toLocaleString('en-IN')}</div>
+      <div class="modal-price">₹${Number(p.price || 0).toLocaleString('en-IN')}</div>
       <button class="modal-add-btn" onclick="addToCart(${p.id}); closeModal()">🛒 Add to Cart</button>
     </div>
   `;
   document.getElementById('productModal').classList.add('open');
-  document.body.style.overflow='hidden';
+  document.body.style.overflow = 'hidden';
 }
+
 function closeModal() {
   document.getElementById('productModal').classList.remove('open');
-  document.body.style.overflow='';
+  document.body.style.overflow = '';
 }
-document.getElementById('productModal').addEventListener('click', function(e){ if(e.target===this) closeModal(); });
 
-/* ══ MOBILE NAV ══ */
 function openMobileNav() {
   document.getElementById('mobileNav').classList.add('open');
   document.getElementById('overlay').classList.add('show');
-  document.body.style.overflow='hidden';
+  document.body.style.overflow = 'hidden';
 }
+
 function closeMobileNav() {
   document.getElementById('mobileNav').classList.remove('open');
   document.getElementById('overlay').classList.remove('show');
-  document.body.style.overflow='';
+  document.body.style.overflow = '';
 }
 
-/* ══ TOAST ══ */
 function showToast(msg) {
-  const t=document.getElementById('toast');
-  t.textContent=msg; t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'), 2600);
+  const t = document.getElementById('toast');
+  if (!t) return;
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2600);
 }
 
-/* ══ SCROLL REVEAL (non-text elements) ══ */
 function observeReveal() {
   const els = document.querySelectorAll('.reveal:not(.visible)');
-  const io = new IntersectionObserver((entries)=>{
-    entries.forEach((e,i)=>{
-      if(e.isIntersecting) {
-        setTimeout(()=>e.target.classList.add('visible'), i*90);
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 90);
         io.unobserve(e.target);
       }
     });
-  }, { threshold:0.1 });
-  els.forEach(el=>io.observe(el));
+  }, { threshold: 0.1 });
+  els.forEach(el => io.observe(el));
 }
 
+function initTextEffects() {
+  document.querySelectorAll('[data-split]').forEach(el => {
+    const splitType = el.dataset.split;
+    const stagger = parseInt(el.dataset.stagger || '60');
+    const effect = el.dataset.effect;
+
+    if (el.dataset.txInit) return;
+    el.dataset.txInit = '1';
+
+    splitText(el, splitType);
+    applyStagger(el, stagger);
+
+    if (effect === 'scroll-progress') {
+      initScrollProgressWords(el);
+    } else {
+      observeTrigger(el);
+    }
+  });
+}
+
+window.addEventListener('storage', (e) => {
+  if (e.key === STORAGE_KEY_PRODUCTS) {
+    renderProducts(currentFilter);
+    syncCartWithCatalog();
+  }
+});
+
+window.addEventListener('focus', () => {
+  renderProducts(currentFilter);
+  syncCartWithCatalog();
+});
+
 /* ══ NAV SCROLL ══ */
-window.addEventListener('scroll', ()=>{
-  document.getElementById('nav').classList.toggle('scrolled', window.scrollY>60);
+window.addEventListener('scroll', () => {
+  document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 60);
 });
 
 /* ══ CURSOR ══ */
 const cursor = document.getElementById('cursor');
 const ring = document.getElementById('cursorRing');
 let mx=0,my=0,rx=0,ry=0;
-document.addEventListener('mousemove', e=>{ mx=e.clientX; my=e.clientY; });
+document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
 function animCursor() {
-  cursor.style.left=mx+'px'; cursor.style.top=my+'px';
-  rx+=(mx-rx)*0.12; ry+=(my-ry)*0.12;
-  ring.style.left=rx+'px'; ring.style.top=ry+'px';
+  if (!cursor || !ring) return;
+  cursor.style.left = mx + 'px';
+  cursor.style.top = my + 'px';
+  rx += (mx - rx) * 0.12;
+  ry += (my - ry) * 0.12;
+  ring.style.left = rx + 'px';
+  ring.style.top = ry + 'px';
   requestAnimationFrame(animCursor);
 }
 animCursor();
-document.querySelectorAll('a,button,.product-card,.cat-card,.feature-card,.stat-card').forEach(el=>{
-  el.addEventListener('mouseenter', ()=>ring.classList.add('hover'));
-  el.addEventListener('mouseleave', ()=>ring.classList.remove('hover'));
+document.querySelectorAll('a,button,.product-card,.cat-card,.feature-card,.stat-card').forEach(el => {
+  el.addEventListener('mouseenter', () => ring && ring.classList.add('hover'));
+  el.addEventListener('mouseleave', () => ring && ring.classList.remove('hover'));
 });
-if('ontouchstart' in window) {
-  cursor.style.display='none';
-  ring.style.display='none';
-  document.body.style.cursor='auto';
+if ('ontouchstart' in window) {
+  if (cursor) cursor.style.display = 'none';
+  if (ring) ring.style.display = 'none';
+  document.body.style.cursor = 'auto';
 }
 
 /* ══════════════════════════════
@@ -2862,43 +3078,40 @@ if('ontouchstart' in window) {
 ══════════════════════════════ */
 
 document.addEventListener('DOMContentLoaded', () => {
+  PRODUCTS = loadProducts();
 
   const loader = document.getElementById('loader');
 
   setTimeout(() => {
-    loader.classList.add('hide');
-
+    if (loader) loader.classList.add('hide');
     setTimeout(() => {
-      loader.remove();
+      if (loader) loader.remove();
     }, 700);
-
   }, 1800);
-
 });
+
 let percent = 0;
 const counter = document.getElementById('loaderCounter');
-
 const timer = setInterval(() => {
   percent += 4;
-
-  if(percent > 100){
+  if (percent > 100) {
     percent = 100;
     clearInterval(timer);
   }
-
-  counter.textContent = percent + '%';
+  if (counter) counter.textContent = percent + '%';
 }, 72);
 
 /* ══ INIT ══ */
-// Hero title mask reveal
 setTimeout(() => {
-  document.getElementById('heroTitle').classList.add('revealed');
+  const heroTitle = document.getElementById('heroTitle');
+  if (heroTitle) heroTitle.classList.add('revealed');
 }, 350);
 
 renderProducts('all');
 updateCartUI();
 observeReveal();
 initTextEffects();
+
 </script>
 </body>
 </html>
