@@ -359,13 +359,107 @@ select option{
   .item-actions{justify-content:flex-start}
   .search{min-width:100%}
 }
+
+
+
+/* LOGIN */
+
+.login-screen{
+  position:fixed;
+  inset:0;
+  z-index:99999;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:#0f0f10;
+}
+
+.login-card{
+  width:100%;
+  max-width:380px;
+  background:#151516;
+  border:1px solid #262628;
+  border-radius:18px;
+  padding:28px;
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+  box-shadow:0 20px 60px rgba(0,0,0,.35);
+}
+
+.login-card h2{
+  font-size:28px;
+  margin:0;
+}
+
+.login-card p{
+  color:#a1a1aa;
+  font-size:14px;
+}
+
+.login-card input{
+  width:100%;
+  padding:13px;
+  border-radius:10px;
+  border:1px solid #262628;
+  background:#101011;
+  color:#fff;
+}
+
+.login-card button{
+  height:46px;
+  border:none;
+  border-radius:10px;
+  background:#FC3B00;
+  color:#fff;
+  cursor:pointer;
+  font-weight:700;
+}
+
+.login-card button:hover{
+  background:#ff4a11;
+}
+
+#loginError{
+  color:#ff7b7b;
+  font-size:13px;
+  min-height:18px;
+}
+
+
+
 </style>
 </head>
 <body>
+  <!-- LOGIN SCREEN -->
+<div id="loginScreen" class="login-screen">
+  <div class="login-card">
+    <h2>Admin Login</h2>
+    <p>Sign in to access the catalogue manager</p>
+
+    <input
+      type="text"
+      id="loginUser"
+      placeholder="Username"
+      autocomplete="off"
+    >
+
+    <input
+      type="password"
+      id="loginPass"
+      placeholder="Password"
+    >
+
+    <button id="loginBtn">Login</button>
+
+    <div id="loginError"></div>
+  </div>
+</div>
+
 <div class="wrap">
   <header class="hero">
     <div class="hero-copy">
-      <div class="eyebrow">Local catalogue manager</div>
+      <div class="eyebrow">catalogue manager</div>
       <h1>Admin Panel</h1>
       <p class="lead">Add new products, edit existing ones, and manage the catalogue directly in the browser. No backend. No clutter. Just the essentials.</p>
     </div>
@@ -379,7 +473,7 @@ select option{
   <section class="stats" id="stats">
     <div class="stat"><div class="k">Products</div><div class="v" id="statCount">0</div></div>
     <div class="stat"><div class="k">Categories</div><div class="v" id="statCats">0</div></div>
-    <div class="stat"><div class="k">Storage</div><div class="v" id="statStorage">OK</div></div>
+    <div class="stat"><div class="k"></div><div class="v" id="statStorage"></div></div>
   </section>
 
   <main class="grid">
@@ -1540,6 +1634,57 @@ document.addEventListener('DOMContentLoaded', () => {
   renderCatalog();
   renderStats();
 });
+
+
+
+/* LOGIN SYSTEM */
+
+const ADMIN_USERNAME = "admin";
+const ADMIN_PASSWORD = "123456";
+
+function checkLogin() {
+  const loggedIn = localStorage.getItem("adminLoggedIn");
+
+  if (loggedIn === "true") {
+    document.getElementById("loginScreen").style.display = "none";
+  }
+}
+
+function login() {
+  const username =
+    document.getElementById("loginUser").value.trim();
+
+  const password =
+    document.getElementById("loginPass").value;
+
+  if (
+    username === ADMIN_USERNAME &&
+    password === ADMIN_PASSWORD
+  ) {
+    localStorage.setItem("adminLoggedIn", "true");
+
+    document.getElementById("loginScreen").style.display =
+      "none";
+
+    toast("Welcome back");
+  } else {
+    document.getElementById("loginError").textContent =
+      "Invalid username or password";
+  }
+}
+
+document
+  .getElementById("loginBtn")
+  .addEventListener("click", login);
+
+document
+  .getElementById("loginPass")
+  .addEventListener("keydown", (e) => {
+    if (e.key === "Enter") login();
+  });
+
+checkLogin();
+
 
 </script>
 </body>
