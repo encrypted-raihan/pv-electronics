@@ -552,6 +552,42 @@ nav.scrolled {
 }
 
 
+.nav-logo{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  text-decoration:none;
+}
+
+.nav-logo-img{
+  height:56px;
+  width:auto;
+  object-fit:contain;
+}
+
+.nav-logo-text{
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+}
+
+@media (max-width:900px){
+  .nav-logo-img{
+    width:40px;
+    height:40px;
+  }
+
+  .nav-logo-main{
+    font-size:15px;
+  }
+
+  .nav-logo-sub{
+    font-size:8px;
+  }
+}
+
+
+
 /* PATTERN */
 
 .cat-pattern{
@@ -1371,6 +1407,56 @@ footer { background:var(--deep); border-top:1px solid var(--border); padding:80p
   margin-bottom:14px;
 }
 
+.loader-brand{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  margin-bottom:20px;
+}
+
+.loader-logo{
+  width:140px;
+  height:auto;
+  object-fit:contain;
+
+  filter:
+    drop-shadow(0 0 15px rgba(252,59,0,.25))
+    drop-shadow(0 0 35px rgba(252,59,0,.15));
+
+  animation:logoFloat 2.5s ease-in-out infinite;
+}
+
+@keyframes logoFloat{
+  0%,100%{
+    transform:translateY(0);
+  }
+  50%{
+    transform:translateY(-8px);
+  }
+}
+
+@media (max-width:768px){
+  .loader-logo{
+    width:110px;
+  }
+}
+
+@media (max-width:900px){
+
+  nav,
+  nav.scrolled{
+    height:72px;
+    padding:0 20px;
+    overflow:visible;
+  }
+
+  .nav-logo-img{
+    height:40px;
+    transform:scale(1.5);
+    transform-origin:left center;
+  }
+}
+
 
 </style>
 </head>
@@ -1391,9 +1477,8 @@ footer { background:var(--deep); border-top:1px solid var(--border); padding:80p
   <div class="loader-content">
 
     <div class="loader-brand">
-      <span class="loader-pv">PV  ELECTRONICS  </span>
-      <span class="loader-text"></span>
-    </div>
+  <img src="assets/logo.png" alt="PV Electronics Logo" class="loader-logo">
+</div>
 
     <div class="loader-tagline">
      
@@ -1409,10 +1494,9 @@ footer { background:var(--deep); border-top:1px solid var(--border); padding:80p
 
 <!-- ══ NAV ══ -->
 <nav id="nav">
-  <a href="#" class="nav-logo">
-    <span class="nav-logo-main">Parankamveettil Electronics </span>
-    <span class="nav-logo-sub"> Est. Kottarakkara</span>
-  </a>
+<a href="#" class="nav-logo">
+  <img src="assets/logo.png" alt="Logo" class="nav-logo-img">
+</a>
   <ul class="nav-links">
     <li><a href="#story">About</a></li>
     <li><a href="#categories">Systems</a></li>
@@ -1821,6 +1905,9 @@ footer { background:var(--deep); border-top:1px solid var(--border); padding:80p
           <li><a href="#products">Repair Services</a></li>
           
         </ul>
+        <a href="admin.html" class="admin-btn">
+  Admin Panel
+</a>
       </div>
       <div class="footer-col">
         <h4>Quick Links</h4>
@@ -1831,9 +1918,7 @@ footer { background:var(--deep); border-top:1px solid var(--border); padding:80p
           <li><a href="#wa-banner">WhatsApp Order</a></li>
           <li><a href="javascript:toggleCart()">View Cart</a></li>
         </ul>
-         <a href="admin.html" class="admin-btn">
-  Admin Panel
-</a>     
+      
       </div>
       <div class="footer-col">
         <h4>Visit Us</h4>
